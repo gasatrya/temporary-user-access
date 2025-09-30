@@ -1,0 +1,43 @@
+{
+  "name": "gasatrya/temporary-user-access",
+  "description": "",
+  "type": "project",
+  "license": "GPL-v2",
+  "authors": [
+    {
+      "name": "Gasatrya",
+      "email": "gasatrya.dev@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.1",
+    "wp-coding-standards/wpcs": "3.2.0",
+    "squizlabs/php_codesniffer": "^3.13"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "archive": {
+    "exclude": [
+      ".gitignore",
+      "README.md",
+      "composer.json",
+      "composer.lock",
+      "LICENSE",
+      "vendor/",
+      ".vscode/",
+      "CLAUDE.md",
+      ".github/",
+      "phpcs.xml.dist",
+      "docs/"
+    ]
+  },
+  "scripts": {
+    "lint": "phpcs .",
+    "lint:fix": "phpcbf .",
+    "test:standards": "phpcs . --report=summary",
+    "zip": "composer archive --format=zip --file temporary-user-access"
+  }
+}

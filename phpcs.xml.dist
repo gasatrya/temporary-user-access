@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Temporary User Access">
+    <description>Custom coding standards for WordPress Temporary User Access plugin</description>
+    
+    <!-- Use WordPress coding standards -->
+    <rule ref="WordPress">
+        <!-- Exclude some rules that are not needed -->
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+    </rule>
+
+    <!-- Check all PHP files in the plugin directory -->
+    <file>.</file>
+
+    <!-- Exclude vendor directory -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- Exclude node_modules directory -->
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <!-- Exclude .git directory -->
+    <exclude-pattern>*/.git/*</exclude-pattern>
+
+    <!-- Show progress and sniff codes in reports -->
+    <arg value="ps"/>
+    <arg name="colors"/>
+
+    <!-- Set extensions to check -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Set encoding -->
+    <arg name="encoding" value="utf-8"/>
+    
+</ruleset>

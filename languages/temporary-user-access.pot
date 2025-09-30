@@ -1,0 +1,130 @@
+# Copyright (C) 2025 Ga Satrya
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Temporary User Access 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/temporary-user-access\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-09-30T23:54:37+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: temporary-user-access\n"
+
+#. Plugin Name of the plugin
+#: temporary-user-access.php
+msgid "Temporary User Access"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: temporary-user-access.php
+msgid "https://www.ctaflow.com/temporary-user-access"
+msgstr ""
+
+#. Description of the plugin
+#: temporary-user-access.php
+msgid "Extend WordPress user management with expiration functionality for temporary user accounts. Set expiry dates, enable auto-deletion, and keep your user database clean."
+msgstr ""
+
+#. Author of the plugin
+#: temporary-user-access.php
+msgid "Ga Satrya"
+msgstr ""
+
+#. Author URI of the plugin
+#: temporary-user-access.php
+msgid "https://www.ctaflow.com"
+msgstr ""
+
+#: includes/authentication.php:57
+msgid "<strong>Error</strong>: Your account has expired. Please contact the administrator."
+msgstr ""
+
+#: includes/user-management.php:23
+#: includes/user-management.php:72
+msgid "Account Expiry Settings"
+msgstr ""
+
+#: includes/user-management.php:29
+#: includes/user-management.php:76
+msgid "Account Expiry Date"
+msgstr ""
+
+#: includes/user-management.php:32
+#: includes/user-management.php:93
+msgid "Optional: Set when this account should expire"
+msgstr ""
+
+#: includes/user-management.php:37
+#: includes/user-management.php:100
+msgid "Auto-delete Settings"
+msgstr ""
+
+#. translators: %d: number of days for grace period
+#: includes/user-management.php:43
+#: includes/user-management.php:107
+#, php-format
+msgid "Auto-delete user after expiry (%d days grace period)"
+msgstr ""
+
+#: includes/user-management.php:47
+#: includes/user-management.php:111
+msgid "User account will be permanently deleted. Posts will be reassigned to admin."
+msgstr ""
+
+#: includes/user-management.php:83
+msgid "Clear"
+msgstr ""
+
+#: includes/user-management.php:88
+msgid "Clear expiry date (make account permanent)"
+msgstr ""
+
+#: includes/user-management.php:160
+msgid "Please enter a valid expiry date that is in the future."
+msgstr ""
+
+#: includes/user-management.php:258
+msgid "Expiry cleared"
+msgstr ""
+
+#: includes/user-management.php:272
+msgid "Status"
+msgstr ""
+
+#: includes/user-management.php:273
+msgid "Expires"
+msgstr ""
+
+#: includes/user-management.php:290
+msgid "Administrator accounts are exempt from expiry"
+msgstr ""
+
+#: includes/user-management.php:307
+#: includes/user-management.php:324
+msgid "Expired"
+msgstr ""
+
+#: includes/user-management.php:311
+msgid "Active"
+msgstr ""
+
+#: includes/user-management.php:337
+msgid "Today"
+msgstr ""
+
+#: includes/user-management.php:342
+msgid "Tomorrow"
+msgstr ""
+
+#. translators: %s: number of days
+#: includes/user-management.php:347
+#: includes/user-management.php:356
+#, php-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
