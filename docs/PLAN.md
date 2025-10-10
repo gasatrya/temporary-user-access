@@ -5,7 +5,7 @@
 
 #### CSRF Protection Gaps
 - **Location**: user-management.php, lines 137, 138, 166, 169, 170, 179
-- **Issue**: The `wp_tua_save_user_fields()` function directly accesses `$_POST` data without explicit nonce verification. While hooked to WordPress actions (`user_register`, `profile_update`) that typically include nonce checks, the function should include its own nonce verification for defense in depth.
+- **Issue**: The `tua_save_user_fields()` function directly accesses `$_POST` data without explicit nonce verification. While hooked to WordPress actions (`user_register`, `profile_update`) that typically include nonce checks, the function should include its own nonce verification for defense in depth.
 - **Risk**: Potential CSRF attacks if WordPress core nonce checks are bypassed or fail.
 - **Recommendation**: Add `wp_verify_nonce()` check using the appropriate nonce field (e.g., `update-user_{$user_id}` for profile updates).
 
@@ -18,16 +18,16 @@
 - **Status**: No direct SQL queries found. All database interactions use WordPress APIs (`get_user_meta()`, `update_user_meta()`, `get_users()`) which are safe from SQL injection.
 
 #### Other Security Issues
-- **Race Conditions**: Mitigated in auto-deletion.php with transient-based locking (`wp_tua_auto_delete_lock`) to prevent concurrent auto-deletion runs.
+- **Race Conditions**: Mitigated in auto-deletion.php with transient-based locking (`tua_auto_delete_lock`) to prevent concurrent auto-deletion runs.
 - **Memory Leaks**: No obvious memory leaks detected.
 
 ### 2. Logic Errors or Bugs
 
 #### Incorrect Filter Hook Parameters
 - **Location**: authentication.php, line 44
-- **Issue**: `add_filter( 'authenticate', 'wp_tua_authenticate_user', 30, 3 );` but the function `wp_tua_authenticate_user()` only accepts 1 parameter (`$user`). The `authenticate` filter actually passes 3 parameters: `$user`, `$username`, `$password`.
+- **Issue**: `add_filter( 'authenticate', 'tua_authenticate_user', 30, 3 );` but the function `tua_authenticate_user()` only accepts 1 parameter (`$user`). The `authenticate` filter actually passes 3 parameters: `$user`, `$username`, `$password`.
 - **Impact**: Function may not receive expected parameters, potentially causing undefined variable errors.
-- **Fix**: Change to `add_filter( 'authenticate', 'wp_tua_authenticate_user', 30, 1 );` or update function signature.
+- **Fix**: Change to `add_filter( 'authenticate', 'tua_authenticate_user', 30, 1 );` or update function signature.
 
 #### Date Calculation Inconsistency
 - **Location**: user-management.php, lines 279-307
@@ -37,14 +37,14 @@
 
 #### Unused Function Parameters
 - **Location**: user-management.php, line 130
-- **Issue**: `wp_tua_validate_user_fields()` parameters `$update` and `$user` are unused (PHPCS warning).
+- **Issue**: `tua_validate_user_fields()` parameters `$update` and `$user` are unused (PHPCS warning).
 - **Impact**: Code clarity issue, no functional bug.
 
 ### 3. Performance Issues
 
 #### Inefficient Auto-Deletion Query
 - **Location**: auto-deletion.php, lines 60-75
-- **Issue**: Queries all users with `auto_delete = '1'`, then loops through them calling `wp_tua_should_auto_delete_user()` which performs additional meta queries for each user.
+- **Issue**: Queries all users with `auto_delete = '1'`, then loops through them calling `tua_should_auto_delete_user()` which performs additional meta queries for each user.
 - **Impact**: Multiple database queries per user in the batch.
 - **Recommendation**: Combine meta queries to filter users more efficiently in the initial `get_users()` call.
 
@@ -65,12 +65,12 @@
 
 #### Code Structure Issues
 - **Location**: user-management.php
-- **Issue**: `wp_tua_show_expiry_columns()` function is quite long (~60 lines) and handles multiple responsibilities.
+- **Issue**: `tua_show_expiry_columns()` function is quite long (~60 lines) and handles multiple responsibilities.
 - **Recommendation**: Break into smaller, focused functions.
 
 #### Hardcoded Values
 - **Location**: temporary-user-access.php, lines 25-27
-- **Issue**: `WP_TUA_AUTO_DELETE_BATCH_SIZE` and `WP_TUA_GRACE_PERIOD_DAYS` are hardcoded constants.
+- **Issue**: `TUA_AUTO_DELETE_BATCH_SIZE` and `TUA_GRACE_PERIOD_DAYS` are hardcoded constants.
 - **Recommendation**: Make configurable via settings page for better flexibility.
 
 ### 5. WordPress Best Practice Violations
@@ -104,7 +104,7 @@
 
 #### Date Parsing Failures
 - **Location**: helpers.php, lines 75-85
-- **Issue**: `wp_tua_get_expiry_timestamp()` doesn't handle `DateTime::createFromFormat()` failures robustly.
+- **Issue**: `tua_get_expiry_timestamp()` doesn't handle `DateTime::createFromFormat()` failures robustly.
 - **Recommendation**: Add better error handling for invalid dates.
 
 ### 7. Potential Improvements

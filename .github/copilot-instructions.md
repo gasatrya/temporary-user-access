@@ -10,14 +10,14 @@ High-level architecture
   - `includes/auto-deletion.php` — auto-delete logic, transient-based throttling, `admin_init` and `wp_login` triggers.
 
 Conventions & patterns to follow
-- Naming: all plugin functions and constants use `wp_tua_` / `WP_TUA_` prefixes (stick to this). Examples: `wp_tua_is_user_expired`, `WP_TUA_USER_EXPIRY_DATE`.
+- Naming: all plugin functions and constants use `tua_` / `TUA_` prefixes (stick to this). Examples: `tua_is_user_expired`, `TUA_USER_EXPIRY_DATE`.
 - User data: plugin stores settings in user meta keys defined in the main file (e.g. `_user_expiry_date`, `_user_account_status`, `_user_auto_delete`). Prefer WP APIs (`get_user_meta`, `update_user_meta`) not direct SQL.
-- Admin exemptions: Administrator accounts are intentionally exempt from expiry checks; many functions early-return for admins (`wp_tua_is_user_admin`). Do not remove or change this behavior unless explicitly requested.
+- Admin exemptions: Administrator accounts are intentionally exempt from expiry checks; many functions early-return for admins (`tua_is_user_admin`). Do not remove or change this behavior unless explicitly requested.
 - Hooks: Work with existing hooks listed in files (e.g. `authenticate`, `auth_cookie_expiration`, `user_new_form`, `show_user_profile`, `admin_init`, `wp_login`, `manage_users_columns`, `pre_get_users`). Add hooks consistently and document them.
 - Security: code already validates WP nonces for profile updates (`update-user_{ID}`). Preserve nonce checks and sanitization (`sanitize_text_field`, `wp_unslash`) when modifying saving/validation logic.
 
 Key implementation details to be aware of
-- Auto-deletion throttling: `auto-deletion.php` uses `set_transient( 'wp_tua_last_auto_delete_check', time(), HOUR_IN_SECONDS )` to run once per hour and processes up to 50 users per batch.
+- Auto-deletion throttling: `auto-deletion.php` uses `set_transient( 'tua_last_auto_delete_check', time(), HOUR_IN_SECONDS )` to run once per hour and processes up to 50 users per batch.
 - Grace period: auto-delete enforces a 7-day grace period after expiry (timestamp + 7 * DAY_IN_SECONDS).
 - Content preservation: deletion reassigns posts/comments using `wp_delete_user( $user_id, $reassign_id )` — reassign id is the first administrator found or `1` fallback.
 - Logging: Debug logging to `wp-content/debug.log` when WP_DEBUG is enabled (no persistent storage)
@@ -37,7 +37,7 @@ Files and locations to inspect for related changes
 
 Common adjustments and examples
 - Adding a settings option: follow the prefix and use `add_option` / `update_option` and register settings if exposing in admin.
-- Adding a new user meta: define a new `WP_TUA_` constant in `temporary-user-access.php` and use `update_user_meta` / `get_user_meta` everywhere.
+- Adding a new user meta: define a new `TUA_` constant in `temporary-user-access.php` and use `update_user_meta` / `get_user_meta` everywhere.
 
 Quick pitfalls to avoid
 - Don’t change admin-exemption logic without a clear requirement.

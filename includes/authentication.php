@@ -16,12 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int $user_id User ID.
  * @return bool
  */
-function wp_tua_is_user_expired( $user_id ) {
-	$expiry_date = get_user_meta( $user_id, WP_TUA_USER_EXPIRY_DATE, true );
+function tua_is_user_expired( $user_id ) {
+	$expiry_date = get_user_meta( $user_id, TUA_USER_EXPIRY_DATE, true );
 	// Check if expiry date has passed
 	if ( ! empty( $expiry_date ) ) {
-		$current_time     = wp_tua_get_current_timestamp();
-		$expiry_timestamp = wp_tua_get_expiry_timestamp( $expiry_date );
+		$current_time     = tua_get_current_timestamp();
+		$expiry_timestamp = tua_get_expiry_timestamp( $expiry_date );
 
 		if ( $expiry_timestamp && $expiry_timestamp <= $current_time ) {
 			return true;
@@ -39,19 +39,19 @@ function wp_tua_is_user_expired( $user_id ) {
  * @param string                $password Password.
  * @return WP_User|WP_Error|null
  */
-function wp_tua_authenticate_user( $user, $username, $password ) {
+function tua_authenticate_user( $user, $username, $password ) {
 	// If authentication already failed, return early
 	if ( is_wp_error( $user ) || null === $user ) {
 		return $user;
 	}
 
 	// Skip check for admin users
-	if ( wp_tua_is_user_admin( $user->ID ) ) {
+	if ( tua_is_user_admin( $user->ID ) ) {
 		return $user;
 	}
 
 	// Check if user account is expired
-	if ( wp_tua_is_user_expired( $user->ID ) ) {
+	if ( tua_is_user_expired( $user->ID ) ) {
 		return new WP_Error(
 			'account_expired',
 			__( '<strong>Error</strong>: Your account has expired. Please contact the administrator.', 'temporary-user-access' )
@@ -60,7 +60,7 @@ function wp_tua_authenticate_user( $user, $username, $password ) {
 
 	return $user;
 }
-add_filter( 'authenticate', 'wp_tua_authenticate_user', 30, 3 );
+add_filter( 'authenticate', 'tua_authenticate_user', 30, 3 );
 
 /**
  * Set auth cookie expiration for users with expiry dates
@@ -69,14 +69,14 @@ add_filter( 'authenticate', 'wp_tua_authenticate_user', 30, 3 );
  * @param int $user_id    User ID.
  * @return int
  */
-function wp_tua_auth_cookie_expiration( $expiration, $user_id ) {
+function tua_auth_cookie_expiration( $expiration, $user_id ) {
 	// Admin users get normal expiration
-	if ( wp_tua_is_user_admin( $user_id ) ) {
+	if ( tua_is_user_admin( $user_id ) ) {
 		return $expiration;
 	}
 
 	// Check if user has an expiry date set
-	$expiry_date = get_user_meta( $user_id, WP_TUA_USER_EXPIRY_DATE, true );
+	$expiry_date = get_user_meta( $user_id, TUA_USER_EXPIRY_DATE, true );
 
 	if ( ! empty( $expiry_date ) ) {
 		// Set 1-hour expiration for users with expiry dates
@@ -85,4 +85,4 @@ function wp_tua_auth_cookie_expiration( $expiration, $user_id ) {
 
 	return $expiration;
 }
-add_filter( 'auth_cookie_expiration', 'wp_tua_auth_cookie_expiration', 10, 3 );
+add_filter( 'auth_cookie_expiration', 'tua_auth_cookie_expiration', 10, 3 );

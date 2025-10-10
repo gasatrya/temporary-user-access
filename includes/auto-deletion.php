@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int $user_id User ID.
  * @return bool
  */
-function wp_tua_should_auto_delete_user( $user_id ) {
-	$auto_delete = get_user_meta( $user_id, WP_TUA_USER_AUTO_DELETE, true );
-	$expiry_date = get_user_meta( $user_id, WP_TUA_USER_EXPIRY_DATE, true );
+function tua_should_auto_delete_user( $user_id ) {
+	$auto_delete = get_user_meta( $user_id, TUA_USER_AUTO_DELETE, true );
+	$expiry_date = get_user_meta( $user_id, TUA_USER_EXPIRY_DATE, true );
 
 	// Check if auto-delete is enabled and user has expiry date
 	if ( '1' !== $auto_delete || empty( $expiry_date ) ) {
@@ -26,14 +26,14 @@ function wp_tua_should_auto_delete_user( $user_id ) {
 	}
 
 	// Check if user is expired
-	if ( ! wp_tua_is_user_expired( $user_id ) ) {
+	if ( ! tua_is_user_expired( $user_id ) ) {
 		return false;
 	}
 
 	// Check grace period
-	$expiry_timestamp = wp_tua_get_expiry_timestamp( $expiry_date );
-	$current_time     = wp_tua_get_current_timestamp();
-	$grace_period_end = $expiry_timestamp + ( WP_TUA_GRACE_PERIOD_DAYS * DAY_IN_SECONDS );
+	$expiry_timestamp = tua_get_expiry_timestamp( $expiry_date );
+	$current_time     = tua_get_current_timestamp();
+	$grace_period_end = $expiry_timestamp + ( TUA_GRACE_PERIOD_DAYS * DAY_IN_SECONDS );
 
 	return $current_time >= $grace_period_end;
 }
@@ -41,7 +41,7 @@ function wp_tua_should_auto_delete_user( $user_id ) {
 /**
  * Auto-delete expired users via WP-Cron
  */
-function wp_tua_auto_delete_expired_users() {
+function tua_auto_delete_expired_users() {
 	// Security check: ensure this function is only called via WP-Cron
 	if ( ! defined( 'DOING_CRON' ) || ! DOING_CRON ) {
 		return;
@@ -53,7 +53,7 @@ function wp_tua_auto_delete_expired_users() {
 	}
 
 	// Prevent race condition: check if auto-deletion is already running
-	$lock_key = 'wp_tua_auto_delete_lock';
+	$lock_key = 'tua_auto_delete_lock';
 	if ( get_transient( $lock_key ) ) {
 		return;
 	}
@@ -64,11 +64,11 @@ function wp_tua_auto_delete_expired_users() {
 	$users = get_users(
 		array(
 			'fields'     => 'ID',
-			'number'     => WP_TUA_AUTO_DELETE_BATCH_SIZE, // Limit batch size for performance
+			'number'     => TUA_AUTO_DELETE_BATCH_SIZE, // Limit batch size for performance
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Intentional meta_query for auto-deletion feature
 			'meta_query' => array(
 				array(
-					'key'     => WP_TUA_USER_AUTO_DELETE,
+					'key'     => TUA_USER_AUTO_DELETE,
 					'value'   => '1',
 					'compare' => '=',
 				),
@@ -83,8 +83,8 @@ function wp_tua_auto_delete_expired_users() {
 
 	foreach ( $users as $user_id ) {
 		++$processed_count;
-		if ( wp_tua_should_auto_delete_user( $user_id ) ) {
-			if ( wp_tua_delete_user_with_content_preservation( $user_id ) ) {
+		if ( tua_should_auto_delete_user( $user_id ) ) {
+			if ( tua_delete_user_with_content_preservation( $user_id ) ) {
 				++$success_count;
 			} else {
 				++$failure_count;
@@ -93,10 +93,10 @@ function wp_tua_auto_delete_expired_users() {
 	}
 
 	// Log batch operation summary
-	wp_tua_log(
+	tua_log(
 		'Auto-deletion batch completed',
 		array(
-			'batch_size' => WP_TUA_AUTO_DELETE_BATCH_SIZE,
+			'batch_size' => TUA_AUTO_DELETE_BATCH_SIZE,
 			'processed'  => $processed_count,
 			'successful' => $success_count,
 			'failed'     => $failure_count,
@@ -106,7 +106,7 @@ function wp_tua_auto_delete_expired_users() {
 	// Release the lock
 	delete_transient( $lock_key );
 }
-add_action( 'wp_tua_auto_delete_cron', 'wp_tua_auto_delete_expired_users' );
+add_action( 'tua_auto_delete_cron', 'tua_auto_delete_expired_users' );
 
 /**
  * Manual deletion capability - can be called from other functions
@@ -114,12 +114,12 @@ add_action( 'wp_tua_auto_delete_cron', 'wp_tua_auto_delete_expired_users' );
  * @param int $user_id User ID to delete.
  * @return bool
  */
-function wp_tua_manual_delete_user( $user_id ) {
+function tua_manual_delete_user( $user_id ) {
 	if ( ! current_user_can( 'delete_users' ) ) {
 		return false;
 	}
 
-	if ( wp_tua_is_user_admin( $user_id ) ) {
+	if ( tua_is_user_admin( $user_id ) ) {
 		return false;
 	}
 
@@ -128,7 +128,7 @@ function wp_tua_manual_delete_user( $user_id ) {
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 	}
 
-	return wp_tua_delete_user_with_content_preservation( $user_id );
+	return tua_delete_user_with_content_preservation( $user_id );
 }
 
 /**
@@ -137,11 +137,11 @@ function wp_tua_manual_delete_user( $user_id ) {
  * @param int $user_id User ID to delete.
  * @return bool True on success, false on failure.
  */
-function wp_tua_delete_user_with_content_preservation( $user_id ) {
+function tua_delete_user_with_content_preservation( $user_id ) {
 	// Validate user exists before attempting deletion
 	$user = get_userdata( $user_id );
 	if ( ! $user ) {
-		wp_tua_log( 'User deletion skipped: user does not exist', array( 'user_id' => $user_id ) );
+		tua_log( 'User deletion skipped: user does not exist', array( 'user_id' => $user_id ) );
 		return true; // Not an error - user already gone
 	}
 
@@ -160,10 +160,10 @@ function wp_tua_delete_user_with_content_preservation( $user_id ) {
 	$reassign_user = get_userdata( $reassign_id );
 	if ( ! $reassign_user || $reassign_id === $user_id ) {
 		// If reassignment user is invalid or same as deleted user, find another admin
-		$reassign_id = wp_tua_get_valid_reassignment_user( $user_id );
+		$reassign_id = tua_get_valid_reassignment_user( $user_id );
 		if ( ! $reassign_id ) {
 			// No valid reassignment user found, cannot delete with content preservation
-			wp_tua_log( 'User deletion failed: no valid reassignment user', array( 'user_id' => $user_id ) );
+			tua_log( 'User deletion failed: no valid reassignment user', array( 'user_id' => $user_id ) );
 			return false;
 		}
 	}
@@ -172,7 +172,7 @@ function wp_tua_delete_user_with_content_preservation( $user_id ) {
 	$deletion_result = wp_delete_user( $user_id, $reassign_id );
 
 	if ( false === $deletion_result ) {
-		wp_tua_log(
+		tua_log(
 			'User deletion failed: wp_delete_user returned false',
 			array(
 				'user_id'       => $user_id,
@@ -183,7 +183,7 @@ function wp_tua_delete_user_with_content_preservation( $user_id ) {
 	}
 
 	// Log successful deletion
-	wp_tua_log(
+	tua_log(
 		'User deleted successfully',
 		array(
 			'user_id'       => $user_id,
@@ -200,7 +200,7 @@ function wp_tua_delete_user_with_content_preservation( $user_id ) {
  * @param int $exclude_user_id User ID to exclude from reassignment.
  * @return int|false Valid user ID or false if none found.
  */
-function wp_tua_get_valid_reassignment_user( $exclude_user_id ) {
+function tua_get_valid_reassignment_user( $exclude_user_id ) {
 	// Try to find any administrator
 	$admin_users = get_users(
 		array(

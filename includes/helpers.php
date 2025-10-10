@@ -15,8 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return bool
  */
-function wp_tua_current_user_can_manage_expiry() {
-	return current_user_can( 'create_users' ) && wp_tua_is_current_user_admin();
+function tua_current_user_can_manage_expiry() {
+	return current_user_can( 'create_users' ) && tua_is_current_user_admin();
 }
 
 /**
@@ -24,7 +24,7 @@ function wp_tua_current_user_can_manage_expiry() {
  *
  * @return bool
  */
-function wp_tua_is_current_user_admin() {
+function tua_is_current_user_admin() {
 	return current_user_can( 'manage_options' );
 }
 
@@ -34,7 +34,7 @@ function wp_tua_is_current_user_admin() {
  * @param int $user_id User ID.
  * @return bool
  */
-function wp_tua_is_user_admin( $user_id ) {
+function tua_is_user_admin( $user_id ) {
 	$user = get_userdata( $user_id );
 	return $user && in_array( 'administrator', (array) $user->roles, true );
 }
@@ -45,7 +45,7 @@ function wp_tua_is_user_admin( $user_id ) {
  * @param string $date Date string.
  * @return bool
  */
-function wp_tua_validate_date( $date ) {
+function tua_validate_date( $date ) {
 	// Empty date is valid (permanent account)
 	if ( empty( $date ) ) {
 		return true;
@@ -72,7 +72,7 @@ function wp_tua_validate_date( $date ) {
  * @param string $message Log message.
  * @param array  $context Optional context data to include in log.
  */
-function wp_tua_log( $message, $context = array() ) {
+function tua_log( $message, $context = array() ) {
 	if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
 		return;
 	}
@@ -87,7 +87,7 @@ function wp_tua_log( $message, $context = array() ) {
  * @param string $expiry_date Expiry date in YYYY-MM-DD format.
  * @return int|false Timestamp in WordPress timezone or false on failure.
  */
-function wp_tua_get_expiry_timestamp( $expiry_date ) {
+function tua_get_expiry_timestamp( $expiry_date ) {
 	if ( empty( $expiry_date ) ) {
 		return false;
 	}
@@ -111,7 +111,7 @@ function wp_tua_get_expiry_timestamp( $expiry_date ) {
  *
  * @return int Current timestamp in WordPress timezone.
  */
-function wp_tua_get_current_timestamp() {
+function tua_get_current_timestamp() {
 	// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- Intentional: need WordPress timezone, not UTC
 	return (int) current_time( 'U' );
 }

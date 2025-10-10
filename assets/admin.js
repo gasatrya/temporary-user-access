@@ -21,7 +21,7 @@
                 
                 var msg = $('#user_expiry_clear_msg');
                 if (msg.length) { 
-                    msg.text(wp_tua_admin.expiry_cleared_text); 
+                    msg.text(tua_admin.expiry_cleared_text); 
                     setTimeout(function(){ 
                         msg.text(''); 
                     }, 2000); 

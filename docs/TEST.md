@@ -94,12 +94,12 @@ Ran terminal command: composer run lint
 3. Manually trigger deletion via code or wait for cron
 
 # Via WP-CLI (if available):
-wp cron event run wp_tua_auto_delete_cron
+wp cron event run tua_auto_delete_cron
 
 # Or via direct function call in theme functions.php:
 add_action('init', function() {
     if (isset($_GET['test_deletion'])) {
-        wp_tua_auto_delete_expired_users();
+        tua_auto_delete_expired_users();
     }
 });
 // Then visit: yoursite.com/?test_deletion=1
@@ -233,17 +233,17 @@ add_action('init', function() {
     
     // Test user creation
     $user_id = wp_create_user('test_user_' . time(), 'password123', 'test@example.com');
-    update_user_meta($user_id, 'WP_TUA_USER_EXPIRY_DATE', date('Y-m-d', strtotime('+1 day')));
-    update_user_meta($user_id, 'WP_TUA_USER_AUTO_DELETE', '1');
+    update_user_meta($user_id, 'TUA_USER_EXPIRY_DATE', date('Y-m-d', strtotime('+1 day')));
+    update_user_meta($user_id, 'TUA_USER_AUTO_DELETE', '1');
     
     echo "Test user created with ID: $user_id<br>";
     
     // Test expiry check
-    $is_expired = wp_tua_is_user_expired($user_id);
+    $is_expired = tua_is_user_expired($user_id);
     echo "User expired status: " . ($is_expired ? 'true' : 'false') . "<br>";
     
     // Test auto-deletion check
-    $should_delete = wp_tua_should_auto_delete_user($user_id);
+    $should_delete = tua_should_auto_delete_user($user_id);
     echo "Should auto-delete: " . ($should_delete ? 'true' : 'false') . "<br>";
 });
 ```

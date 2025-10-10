@@ -22,53 +22,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'WP_TUA_VERSION', '1.0.0' );
-define( 'WP_TUA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'WP_TUA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'WP_TUA_BASENAME', plugin_basename( __FILE__ ) );
+define( 'TUA_VERSION', '1.0.0' );
+define( 'TUA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'TUA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'TUA_BASENAME', plugin_basename( __FILE__ ) );
 
 // Define user meta keys
-define( 'WP_TUA_USER_EXPIRY_DATE', '_user_expiry_date' );
-define( 'WP_TUA_USER_ACCOUNT_STATUS', '_user_account_status' );
-define( 'WP_TUA_USER_AUTO_DELETE', '_user_auto_delete' );
-define( 'WP_TUA_USER_GRACE_PERIOD', '_user_expiry_grace_period' );
+define( 'TUA_USER_EXPIRY_DATE', '_user_expiry_date' );
+define( 'TUA_USER_ACCOUNT_STATUS', '_user_account_status' );
+define( 'TUA_USER_AUTO_DELETE', '_user_auto_delete' );
+define( 'TUA_USER_GRACE_PERIOD', '_user_expiry_grace_period' );
 
 // Define account status constants
-define( 'WP_TUA_STATUS_ACTIVE', 'active' );
-define( 'WP_TUA_STATUS_EXPIRED', 'expired' );
+define( 'TUA_STATUS_ACTIVE', 'active' );
+define( 'TUA_STATUS_EXPIRED', 'expired' );
 
 // Define configurable constants
-define( 'WP_TUA_AUTO_DELETE_BATCH_SIZE', 50 );
-define( 'WP_TUA_GRACE_PERIOD_DAYS', 7 );
+define( 'TUA_AUTO_DELETE_BATCH_SIZE', 50 );
+define( 'TUA_GRACE_PERIOD_DAYS', 7 );
 
 // Include additional functionality files
-require_once WP_TUA_PLUGIN_DIR . 'includes/helpers.php';
-require_once WP_TUA_PLUGIN_DIR . 'includes/authentication.php';
-require_once WP_TUA_PLUGIN_DIR . 'includes/user-management.php';
-require_once WP_TUA_PLUGIN_DIR . 'includes/auto-deletion.php';
+require_once TUA_PLUGIN_DIR . 'includes/helpers.php';
+require_once TUA_PLUGIN_DIR . 'includes/authentication.php';
+require_once TUA_PLUGIN_DIR . 'includes/user-management.php';
+require_once TUA_PLUGIN_DIR . 'includes/auto-deletion.php';
 
 /**
  * Plugin activation hook
  */
-function wp_tua_activate_plugin() {
+function tua_activate_plugin() {
 	// Set up any required database tables or options
-	update_option( 'wp_tua_plugin_version', WP_TUA_VERSION );
+	update_option( 'tua_plugin_version', TUA_VERSION );
 
 	// Schedule auto-deletion cron job
-	if ( ! wp_next_scheduled( 'wp_tua_auto_delete_cron' ) ) {
-		wp_schedule_event( time(), 'hourly', 'wp_tua_auto_delete_cron' );
+	if ( ! wp_next_scheduled( 'tua_auto_delete_cron' ) ) {
+		wp_schedule_event( time(), 'hourly', 'tua_auto_delete_cron' );
 	}
 }
-register_activation_hook( __FILE__, 'wp_tua_activate_plugin' );
+register_activation_hook( __FILE__, 'tua_activate_plugin' );
 
 /**
  * Plugin deactivation hook
  */
-function wp_tua_deactivate_plugin() {
+function tua_deactivate_plugin() {
 	// Clean up temporary data or options if needed
-	delete_option( 'wp_tua_plugin_version' );
+	delete_option( 'tua_plugin_version' );
 
 	// Remove auto-deletion cron job
-	wp_clear_scheduled_hook( 'wp_tua_auto_delete_cron' );
+	wp_clear_scheduled_hook( 'tua_auto_delete_cron' );
 }
-register_deactivation_hook( __FILE__, 'wp_tua_deactivate_plugin' );
+register_deactivation_hook( __FILE__, 'tua_deactivate_plugin' );
