@@ -13,7 +13,7 @@
  * Description:       Extend WordPress user management with expiration functionality for temporary user accounts. Set expiry dates, enable auto-deletion, and keep your user database clean.
  * Version:           1.0.0
  * Requires at least: 6.4
- * Requires PHP:      8
+ * Requires PHP:      8.0
  * Author:            Ga Satrya
  * Author URI:        https://www.ctaflow.com/
  * License:           GPL v2 or later
@@ -24,7 +24,7 @@
 
 // Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
-	exit();
+	exit;
 }
 
 /**
@@ -52,8 +52,8 @@ spl_autoload_register(
 /**
  * Initialize the plugin.
  */
-function temporary_user_access_init() {
+function tempusac_init() {
 	// Initialize the main plugin class.
 	\TemporaryUserAccess\Core::get_instance();
 }
-add_action( 'plugins_loaded', 'temporary_user_access_init' );
+add_action( 'plugins_loaded', 'tempusac_init' );

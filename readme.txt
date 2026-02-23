@@ -1,10 +1,10 @@
 === Temporary User Access ===
 Contributors: gasatrya
-Tags: user management, expiry, temporary access, auto-delete, user cleanup, membership
+Tags: user management, membership, expiry, temporary access, auto-delete
 Requires at least: 6.4
 Tested up to: 6.9
 Stable tag: 1.0.0
-Requires PHP: 8
+Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

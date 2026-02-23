@@ -7,6 +7,10 @@
 
 namespace TemporaryUserAccess\Utils;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use DateTime;
 use DateTimeZone;
 

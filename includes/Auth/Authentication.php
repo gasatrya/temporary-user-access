@@ -7,6 +7,10 @@
 
 namespace TemporaryUserAccess\Auth;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use TemporaryUserAccess\Utils\Helpers;
 use WP_User;
 use WP_Error;

@@ -7,6 +7,10 @@
 
 namespace TemporaryUserAccess;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Core Plugin Class
  */

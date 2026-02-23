@@ -7,6 +7,10 @@
 
 namespace TemporaryUserAccess\Admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use TemporaryUserAccess\Utils\Helpers;
 use TemporaryUserAccess\Auth\Authentication;
 use DateTime;
