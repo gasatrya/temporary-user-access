@@ -10,6 +10,6 @@ docs/ export-ignore
 README.md export-ignore
 LICENSE export-ignore
 .vscode/ export-ignore
-CLAUDE.md export-ignore
+GEMINI.md export-ignore
 .github/ export-ignore
 .notes/ export-ignore
