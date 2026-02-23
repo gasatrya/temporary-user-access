@@ -1,6 +1,6 @@
 # Temporary User Access — WordPress Plugin
 
-[![WordPress Requirements](https://img.shields.io/badge/WordPress-6.4%2B-0073AA.svg?style=flat-square&logo=wordpress)](https://wordpress.org/download/)
+[![WordPress Requirements](https://img.shields.io/badge/WordPress-6.9.1%2B-0073AA.svg?style=flat-square&logo=wordpress)](https://wordpress.org/download/)
 [![PHP Requirements](https://img.shields.io/badge/PHP-8.0%2B-777BB4.svg?style=flat-square&logo=php)](https://www.php.net/downloads)
 [![License](https://img.shields.io/badge/License-GPL--2.0--or--later-brightgreen.svg?style=flat-square)](LICENSE)
 

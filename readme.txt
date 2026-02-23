@@ -1,6 +1,6 @@
 === Temporary User Access ===
 Contributors: gasatrya
-Tags: user management, expiry, temporary access, auto-delete, user cleanup
+Tags: user management, expiry, temporary access, auto-delete, user cleanup, membership
 Requires at least: 6.4
 Tested up to: 6.9
 Stable tag: 1.0.0

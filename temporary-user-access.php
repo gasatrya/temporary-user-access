@@ -9,7 +9,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Temporary User Access
- * Plugin URI:        https://www.ctaflow.com/temporary-user-access
+ * Plugin URI:        https://www.ctaflow.com/plugins/temporary-user-access
  * Description:       Extend WordPress user management with expiration functionality for temporary user accounts. Set expiry dates, enable auto-deletion, and keep your user database clean.
  * Version:           1.0.0
  * Requires at least: 6.4
@@ -24,7 +24,7 @@
 
 // Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit();
 }
 
 /**
