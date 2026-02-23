@@ -1,79 +1,97 @@
 === Temporary User Access ===
 Contributors: gasatrya
 Tags: user management, expiry, temporary access, auto-delete, user cleanup
-Requires at least: 6.0
-Tested up to: 6.8
+Requires at least: 6.4
+Tested up to: 6.9
 Stable tag: 1.0.0
-Requires PHP: 7.4
+Requires PHP: 8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-With this plugin, you can add temporary user access to WordPress accounts. Set expiry dates, enable auto-deletion, and keep your user database clean.
+Automate the lifecycle of temporary WordPress users. Set expiry dates, enforce strict access control, and keep your database lean with auto-deletion.
 
 == Description ==
 
-Temporary User Access extends WordPress user management with powerful expiration functionality. Perfect for temporary staff, contractors, trial users, or any scenario where user accounts should automatically expire.
+Giving temporary access to contractors, guest writers, or support agents is a standard part of managing a WordPress site. The problem? **Administrators often forget to revoke that access.**
 
-**Key Features**:
+These "Zombie Accounts" are a major security risk and lead to database bloat over time.
 
-- Set expiry dates for individual users
-- Auto-delete expired users after grace period
-- Content preservation - posts/comments reassigned to administrators
-- Administrator accounts exempt from expiry
-- Clean admin interface with expiry status columns
-- Secure with proper nonce validation
-- Timezone-aware expiry calculations
-- Debug logging when WP_DEBUG is enabled
+**Temporary User Access** solves this by automating the offboarding process. You set an expiry date at the moment of account creation, and the plugin handles the rest—from blocking login to permanent deletion.
 
-**Why Choose Temporary User Access?**
+Built with a performance-first, object-oriented architecture for modern WordPress sites.
 
-* **Automated Cleanup**: Automatically delete expired user accounts to keep your database clean
-* **Content Safety**: Preserve all user content by reassigning posts and comments to administrators
-* **Flexible Expiry**: Set different expiry dates for each user based on their specific needs
-* **Security First**: Built with WordPress security best practices including nonce validation
-* **Timezone Aware**: Accurate expiry calculations using WordPress timezone settings
-* **Admin Friendly**: Clear status columns in users table show expiry status at a glance
+= Who is this for? =
 
-**Perfect For**:
+*   **Agencies & Developers** giving temporary site access to contractors.
+*   **Membership Sites** offering limited-time "Trial" or "Preview" accounts.
+*   **News & Blogs** hiring guest contributors for specific projects.
+*   **Security-Conscious Admins** who want to ensure access is always revoked on time.
 
-* Temporary staff and contractors
-* Trial accounts and demo users
-* Event or project-based access
-* Membership sites with time-limited access
-* Any scenario requiring automated user cleanup
+= Core Features =
+
+*   **Expiry Date Management** — Easily set an expiration date for any non-administrator user directly from the user profile or registration screen.
+*   **Real-Time Enforcement** — Expired users are blocked immediately. Even if they are already logged in, the system re-validates their status hourly.
+*   **Auto-Deletion System** — Choose to have expired users automatically removed from your database after a 7-day grace period.
+*   **Content Preservation** — When a user is auto-deleted, all their posts and comments are safely reassigned to a site administrator.
+*   **Admin Immunity** — Site administrators are protected from accidental expiration to ensure you never lose access to your own site.
+*   **Clean Admin Interface** — Adds "Status" and "Expires" columns to the Users list with color-coded badges for at-a-glance management.
+*   **Developer Friendly** — Namespaced, class-based architecture following PHP 8 standards and WordPress best practices.
+
+= Privacy First =
+
+This plugin is built with data minimization in mind. It helps you comply with GDPR by ensuring personal data (user accounts) is not kept longer than necessary. No external tracking, no "Powered by" links, and no remote data collection.
+
+= Future Roadmap =
+
+*   **Email Notifications** — Automated warnings sent to users before their access expires.
+*   **Bulk Actions** — Set or clear expiry dates for multiple users at once from the Users list.
+*   **Customizable Settings** — Adjust the 7-day grace period and auto-deletion batch sizes.
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/temporary-user-access` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Users → Add New or edit existing users to set expiry dates
-4. Enable auto-delete for users you want automatically removed after expiry
+1.  Upload the `temporary-user-access` folder to the `/wp-content/plugins/` directory, or install via **Plugins → Add New** in your WordPress dashboard.
+2.  Activate the plugin through the **Plugins** menu.
+3.  Go to **Users → Add New** or edit an existing user.
+4.  Look for the **Account Expiry Settings** section at the bottom of the form.
+5.  Set an expiry date and (optionally) enable auto-deletion.
 
 == Frequently Asked Questions ==
 
-= How does auto-deletion work? =
-Auto-deletion runs hourly via WP-Cron. Users with auto-delete enabled are deleted 7 days after their expiry date, giving you a grace period to review.
+= Can I expire an Administrator account? =
 
-= What happens to user content when they're deleted? =
-All posts and comments are reassigned to an administrator account to preserve your site's content.
+No. For security reasons, Administrator accounts are intentionally exempt from all expiration and deletion logic. This prevents "locking yourself out" of your own site.
 
-= Can administrators be expired? =
-No, administrator accounts are exempt from expiry checks for security reasons.
+= What happens when a user expires? =
 
-= How accurate are the expiry calculations? =
-The plugin uses WordPress timezone settings for accurate expiry calculations, ensuring users expire at the intended local time.
+As soon as the expiry date passes, the user is blocked from logging in. If they have an active session, they will be logged out within one hour (due to the forced 1-hour cookie expiration for temporary users).
+
+= How does the 7-day grace period work? =
+
+If "Auto-delete" is enabled, the plugin waits exactly 7 days after the account has expired before deleting it. This gives you a window to extend their access if needed.
+
+= Does it support timezones? =
+
+Yes. The plugin uses your site's global timezone setting (set in Settings > General) to calculate exactly when "midnight" occurs for expiry.
+
+= Will it slow down my site? =
+
+No. The plugin is lightweight, uses no external dependencies, and its heaviest task (auto-deletion) is throttled to run only once per hour via WP-Cron in small batches.
 
 == Screenshots ==
 
-1. User profile with expiry settings
-2. Users list with expiry status columns
+1. User profile with the new Account Expiry Settings.
+2. The Users list table featuring color-coded expiry status columns.
 
 == Changelog ==
 
 = 1.0.0 =
-* Initial release with core expiry functionality
-* Auto-deletion with content preservation
-* Admin interface with expiry status columns
-* Timezone-aware expiry calculations
-* Secure implementation with nonce validation
-* Debug logging when WP_DEBUG is enabled
+*   Initial release.
+*   Core expiry logic and login blocking.
+*   Auto-deletion with 7-day grace period and content reassignment.
+*   Admin UI enhancements (custom columns and sorting).
+*   Modern namespaced architecture (PHP 8).
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release. No upgrade steps required.
