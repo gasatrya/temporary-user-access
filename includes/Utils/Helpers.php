@@ -70,9 +70,7 @@ final class Helpers {
 		}
 
 		// Get current date in WordPress timezone.
-		$wp_timezone = wp_timezone();
-		$now         = new DateTime( 'now', $wp_timezone );
-		$today       = $now->format( 'Y-m-d' );
+		$today = current_time( 'Y-m-d' );
 
 		// Date must be today or in the future.
 		return $date >= $today;

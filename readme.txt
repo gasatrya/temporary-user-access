@@ -30,7 +30,9 @@ Built with a performance-first, object-oriented architecture for modern WordPres
 = Core Features =
 
 *   **Expiry Date Management** — Easily set an expiration date for any non-administrator user directly from the user profile or registration screen.
-*   **Real-Time Enforcement** — Expired users are blocked immediately. Even if they are already logged in, the system re-validates their status hourly.
+*   **Manual Status Control** — Revoke access immediately with a single click using the "Account Status" toggle, overriding the automated expiry date.
+*   **Real-Time Enforcement** — Expired users are blocked immediately.
+ Even if they are already logged in, the system re-validates their status hourly.
 *   **Auto-Deletion System** — Choose to have expired users automatically removed from your database after a 7-day grace period.
 *   **Content Preservation** — When a user is auto-deleted, all their posts and comments are safely reassigned to a site administrator.
 *   **Admin Immunity** — Site administrators are protected from accidental expiration to ensure you never lose access to your own site.

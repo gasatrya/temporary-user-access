@@ -9,6 +9,7 @@
 ## 🚀 Key Features
 
 -   **Automated Offboarding** — Set an expiry date during user creation or editing.
+-   **Manual Revocation** — Instantly kill access for any user by switching their status to "Expired".
 -   **Strict Access Control** — Expired users are blocked from logging in immediately.
 -   **Smart Cookie Expiration** — Temporary users get a forced 1-hour session limit to ensure frequent re-validation of their status.
 -   **Auto-Deletion System** — Automatically remove expired users after a 7-day grace period.

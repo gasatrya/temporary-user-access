@@ -33,7 +33,7 @@ class UserManagement {
 		add_action( 'show_user_profile', array( $this, 'add_user_profile_fields' ) );
 		add_action( 'edit_user_profile', array( $this, 'add_user_profile_fields' ) );
 
-		add_filter( 'user_profile_update_errors', array( $this, 'validate_user_fields' ), 10, 3 );
+		add_filter( 'user_profile_update_errors', array( $this, 'validate_user_fields' ), 10, 1 );
 
 		add_action( 'user_register', array( $this, 'save_user_fields' ) );
 		add_action( 'profile_update', array( $this, 'save_user_fields' ) );
@@ -55,6 +55,8 @@ class UserManagement {
 			return;
 		}
 
+		$today = current_time( 'Y-m-d' );
+
 		?>
 		<h3><?php esc_html_e( 'Account Expiry Settings', 'temporary-user-access' ); ?></h3>
 
@@ -62,10 +64,22 @@ class UserManagement {
 			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
 
 			<tr>
+				<th><label for="user_account_status"><?php esc_html_e( 'Account Status', 'temporary-user-access' ); ?></label></th>
+				<td>
+					<select name="user_account_status" id="user_account_status">
+						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_ACTIVE ); ?>"><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></option>
+						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>"><?php esc_html_e( 'Expired (Revoke Access)', 'temporary-user-access' ); ?></option>
+					</select>
+					<p class="description"><?php esc_html_e( 'Manually override access status.', 'temporary-user-access' ); ?></p>
+				</td>
+			</tr>
+
+			<tr>
 				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'temporary-user-access' ); ?></label></th>
 				<td>
-					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" />
-					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire', 'temporary-user-access' ); ?></p>
+					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" 
+									min="<?php echo esc_attr( $today ); ?>" />
+					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'temporary-user-access' ); ?></p>
 				</td>
 			</tr>
 
@@ -101,17 +115,33 @@ class UserManagement {
 
 		$expiry_date = get_user_meta( $user->ID, TEMPUSAC_USER_EXPIRY_DATE, true );
 		$auto_delete = get_user_meta( $user->ID, TEMPUSAC_USER_AUTO_DELETE, true );
+		$status      = get_user_meta( $user->ID, TEMPUSAC_USER_ACCOUNT_STATUS, true );
+		$status      = empty( $status ) ? TEMPUSAC_STATUS_ACTIVE : $status;
+		$today       = current_time( 'Y-m-d' );
 
 		?>
 		<h3><?php esc_html_e( 'Account Expiry Settings', 'temporary-user-access' ); ?></h3>
 
 		<table class="form-table">
 			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
+
+			<tr>
+				<th><label for="user_account_status"><?php esc_html_e( 'Account Status', 'temporary-user-access' ); ?></label></th>
+				<td>
+					<select name="user_account_status" id="user_account_status">
+						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_ACTIVE ); ?>" <?php selected( $status, TEMPUSAC_STATUS_ACTIVE ); ?>><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></option>
+						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" <?php selected( $status, TEMPUSAC_STATUS_EXPIRED ); ?>><?php esc_html_e( 'Expired (Revoke Access)', 'temporary-user-access' ); ?></option>
+					</select>
+					<p class="description"><?php esc_html_e( 'Manually override access status.', 'temporary-user-access' ); ?></p>
+				</td>
+			</tr>
+
 			<tr>
 				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'temporary-user-access' ); ?></label></th>
 				<td>
 					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" 
-							value="<?php echo esc_attr( (string) $expiry_date ); ?>" />
+							value="<?php echo esc_attr( (string) $expiry_date ); ?>"
+							min="<?php echo esc_attr( $today ); ?>" />
 
 					<?php if ( ! empty( $expiry_date ) ) : ?>
 						<button type="button" id="user_expiry_clear_btn" class="button">
@@ -125,7 +155,7 @@ class UserManagement {
 						</p>
 						<span id="user_expiry_clear_msg" class="screen-reader-text" aria-live="polite"></span>
 					<?php endif; ?>
-					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire', 'temporary-user-access' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'temporary-user-access' ); ?></p>
 				</td>
 			</tr>
 
@@ -157,7 +187,7 @@ class UserManagement {
 	 */
 	public function validate_user_fields( WP_Error $errors ): WP_Error {
 		// Only validate if our field is present in the request.
-		if ( ! isset( $_POST['user_expiry_date'] ) ) {
+		if ( ! isset( $_POST['user_expiry_date'] ) && ! isset( $_POST['user_account_status'] ) ) {
 			return $errors;
 		}
 
@@ -173,9 +203,11 @@ class UserManagement {
 		}
 
 		// Validate expiry date format.
-		$expiry_date = sanitize_text_field( wp_unslash( $_POST['user_expiry_date'] ) );
-		if ( ! empty( $expiry_date ) && ! Helpers::validate_date( $expiry_date ) ) {
-			$errors->add( 'invalid_expiry_date', __( '<strong>Error</strong>: Please enter a valid expiry date that is in the future.', 'temporary-user-access' ) );
+		if ( isset( $_POST['user_expiry_date'] ) ) {
+			$expiry_date = sanitize_text_field( wp_unslash( $_POST['user_expiry_date'] ) );
+			if ( ! empty( $expiry_date ) && ! Helpers::validate_date( $expiry_date ) ) {
+				$errors->add( 'invalid_expiry_date', __( '<strong>Error</strong>: Please enter a valid expiry date that is in the future.', 'temporary-user-access' ) );
+			}
 		}
 
 		return $errors;
@@ -188,7 +220,7 @@ class UserManagement {
 	 */
 	public function save_user_fields( int $user_id ): void {
 		// Only proceed if our fields are present in the request.
-		if ( ! isset( $_POST['user_expiry_date'] ) && ! isset( $_POST['user_expiry_clear'] ) && ! isset( $_POST['user_auto_delete'] ) ) {
+		if ( ! isset( $_POST['user_expiry_date'] ) && ! isset( $_POST['user_expiry_clear'] ) && ! isset( $_POST['user_auto_delete'] ) && ! isset( $_POST['user_account_status'] ) ) {
 			return;
 		}
 
@@ -216,6 +248,14 @@ class UserManagement {
 		// For existing users, don't save if they're admins (extra safety layer).
 		if ( $user_id > 0 && Helpers::is_user_admin( $user_id ) ) {
 			return;
+		}
+
+		// Save account status.
+		if ( isset( $_POST['user_account_status'] ) ) {
+			$status = sanitize_text_field( wp_unslash( $_POST['user_account_status'] ) );
+			if ( in_array( $status, array( TEMPUSAC_STATUS_ACTIVE, TEMPUSAC_STATUS_EXPIRED ), true ) ) {
+				update_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, $status );
+			}
 		}
 
 		// Save expiry date.
@@ -277,6 +317,7 @@ class UserManagement {
 				'tempusac_admin',
 				array(
 					'expiry_cleared_text' => __( 'Expiry cleared', 'temporary-user-access' ),
+					'today'               => current_time( 'Y-m-d' ),
 				)
 			);
 		}
@@ -314,17 +355,10 @@ class UserManagement {
 			return $value;
 		}
 
-		$expiry_date = (string) get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
-
 		// Expiry Status column.
 		if ( 'expiry_status' === $column_name ) {
-			if ( ! empty( $expiry_date ) ) {
-				$expiry_timestamp = Helpers::get_expiry_timestamp( $expiry_date );
-				$current_time     = Helpers::get_current_timestamp();
-
-				if ( $expiry_timestamp && $expiry_timestamp <= $current_time ) {
-					return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'temporary-user-access' ) . '</span>';
-				}
+			if ( Authentication::is_user_expired( $user_id ) ) {
+				return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'temporary-user-access' ) . '</span>';
 			}
 
 			return '<span class="expiry-status active">' . esc_html__( 'Active', 'temporary-user-access' ) . '</span>';
@@ -332,6 +366,8 @@ class UserManagement {
 
 		// Expires column.
 		if ( 'expires' === $column_name ) {
+			$expiry_date = (string) get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
+
 			if ( empty( $expiry_date ) ) {
 				return '—';
 			}

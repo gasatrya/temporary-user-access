@@ -38,6 +38,12 @@ class Authentication {
 	 * @return bool
 	 */
 	public static function is_user_expired( int $user_id ): bool {
+		// Check manual status first.
+		$status = get_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, true );
+		if ( TEMPUSAC_STATUS_EXPIRED === $status ) {
+			return true;
+		}
+
 		$expiry_date = get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
 		// Check if expiry date has passed.
 		if ( ! empty( $expiry_date ) ) {
