@@ -1,0 +1,22 @@
+/**
+ * Admin CSS for Temporary User Access plugin
+ *
+ * @package TemporaryUserAccess
+ */
+
+.expiry-status.expired {
+	color: #dc3232;
+	font-weight: bold;
+}
+
+.expiry-status.active {
+	color: #46b450;
+}
+
+.column-expiry_status {
+	width: 120px;
+}
+
+.column-expires {
+	width: 100px;
+}

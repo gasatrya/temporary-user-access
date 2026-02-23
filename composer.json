@@ -1,18 +1,24 @@
 {
   "name": "gasatrya/temporary-user-access",
-  "description": "",
-  "type": "project",
-  "license": "GPL-v2",
+  "description": "Create temporary users with expiration dates for secure, time-limited access to your WordPress site.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "Gasatrya",
-      "email": "gasatrya.dev@gmail.com"
+      "name": "Ga Satrya"
     }
   ],
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^1.1",
     "wp-coding-standards/wpcs": "3.2.0",
-    "squizlabs/php_codesniffer": "^3.13"
+    "squizlabs/php_codesniffer": "^3.13",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpcompatibility/phpcompatibility-wp": "^2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "TemporaryUserAccess\\": "includes/"
+    }
   },
   "config": {
     "allow-plugins": {
@@ -21,23 +27,27 @@
   },
   "archive": {
     "exclude": [
+      ".git/",
       ".gitignore",
       "README.md",
       "composer.json",
       "composer.lock",
-      "LICENSE",
+      "phpcs.xml.dist",
+      ".phpcs-cache",
       "vendor/",
+      "node_modules/",
+      "package.json",
+      "package-lock.json",
+      "LICENSE",
       ".vscode/",
       "CLAUDE.md",
       ".github/",
-      "phpcs.xml.dist",
       "docs/"
     ]
   },
   "scripts": {
-    "lint": "phpcs .",
-    "lint:fix": "phpcbf .",
-    "test:standards": "phpcs . --report=summary",
-    "zip": "composer archive --format=zip --file temporary-user-access"
+    "zip": "git archive --prefix=temporary-user-access/ -o temporary-user-access.zip HEAD",
+    "phpcs": "phpcs",
+    "phpcbf": "phpcbf"
   }
 }

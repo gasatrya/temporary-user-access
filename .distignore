@@ -1,0 +1,15 @@
+.gitignore
+.distignore
+composer.json
+composer.lock
+phpcs.xml.dist
+.phpcs-cache
+.git/
+vendor/
+docs/
+README.md
+LICENSE
+.vscode/
+CLAUDE.md
+.github/
+.notes/

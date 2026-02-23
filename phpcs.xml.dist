@@ -1,35 +1,45 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress Temporary User Access">
-    <description>Custom coding standards for WordPress Temporary User Access plugin</description>
-    
-    <!-- Use WordPress coding standards -->
-    <rule ref="WordPress">
-        <!-- Exclude some rules that are not needed -->
-        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
-        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
-        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-    </rule>
+<ruleset name="Temporary User Access Coding Standards">
+    <description>WordPress Coding Standards for Temporary User Access plugin</description>
 
-    <!-- Check all PHP files in the plugin directory -->
-    <file>.</file>
-
-    <!-- Exclude vendor directory -->
-    <exclude-pattern>*/vendor/*</exclude-pattern>
-
-    <!-- Exclude node_modules directory -->
-    <exclude-pattern>*/node_modules/*</exclude-pattern>
-
-    <!-- Exclude .git directory -->
-    <exclude-pattern>*/.git/*</exclude-pattern>
-
-    <!-- Show progress and sniff codes in reports -->
     <arg value="ps"/>
     <arg name="colors"/>
-
-    <!-- Set extensions to check -->
+    <arg name="basepath" value="."/>
+    <arg name="parallel" value="20"/>
     <arg name="extensions" value="php"/>
+    <arg name="cache" value=".phpcs-cache"/>
 
-    <!-- Set encoding -->
-    <arg name="encoding" value="utf-8"/>
-    
+    <file>.</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/.git/*</exclude-pattern>
+
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    </rule>
+
+    <rule ref="PHPCompatibilityWP"/>
+
+    <config name="minimum_supported_wp_version" value="5.9"/>
+    <config name="testVersion" value="7.4-"/>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="temporary-user-access"/>
+            </property>
+        </properties>
+    </rule>
+
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="tempusac"/>
+                <element value="temporary_user_access"/>
+                <element value="TemporaryUserAccess"/>
+            </property>
+        </properties>
+    </rule>
+
 </ruleset>

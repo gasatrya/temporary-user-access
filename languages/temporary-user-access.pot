@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ga Satrya
+# Copyright (C) 2026 Ga Satrya
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-10T22:05:36+00:00\n"
+"POT-Creation-Date: 2026-02-23T17:54:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: temporary-user-access\n"
@@ -36,95 +36,99 @@ msgstr ""
 
 #. Author URI of the plugin
 #: temporary-user-access.php
-msgid "https://www.ctaflow.com"
+msgid "https://www.ctaflow.com/"
 msgstr ""
 
-#: includes/authentication.php:57
-msgid "<strong>Error</strong>: Your account has expired. Please contact the administrator."
-msgstr ""
-
-#: includes/user-management.php:23
-#: includes/user-management.php:72
+#: includes/Admin/UserManagement.php:59
+#: includes/Admin/UserManagement.php:106
 msgid "Account Expiry Settings"
 msgstr ""
 
-#: includes/user-management.php:29
-#: includes/user-management.php:76
+#: includes/Admin/UserManagement.php:65
+#: includes/Admin/UserManagement.php:111
 msgid "Account Expiry Date"
 msgstr ""
 
-#: includes/user-management.php:32
-#: includes/user-management.php:93
+#: includes/Admin/UserManagement.php:68
+#: includes/Admin/UserManagement.php:128
 msgid "Optional: Set when this account should expire"
 msgstr ""
 
-#: includes/user-management.php:37
-#: includes/user-management.php:100
+#: includes/Admin/UserManagement.php:73
+#: includes/Admin/UserManagement.php:133
 msgid "Auto-delete Settings"
 msgstr ""
 
 #. translators: %d: number of days for grace period
-#: includes/user-management.php:43
-#: includes/user-management.php:107
+#: includes/Admin/UserManagement.php:79
+#: includes/Admin/UserManagement.php:140
 #, php-format
 msgid "Auto-delete user after expiry (%d days grace period)"
 msgstr ""
 
-#: includes/user-management.php:47
-#: includes/user-management.php:111
+#: includes/Admin/UserManagement.php:83
+#: includes/Admin/UserManagement.php:144
 msgid "User account will be permanently deleted. Posts will be reassigned to admin."
 msgstr ""
 
-#: includes/user-management.php:83
+#: includes/Admin/UserManagement.php:118
 msgid "Clear"
 msgstr ""
 
-#: includes/user-management.php:88
+#: includes/Admin/UserManagement.php:123
 msgid "Clear expiry date (make account permanent)"
 msgstr ""
 
-#: includes/user-management.php:160
-msgid "Please enter a valid expiry date that is in the future."
+#: includes/Admin/UserManagement.php:171
+msgid "<strong>Error</strong>: Security check failed. Please try again."
 msgstr ""
 
-#: includes/user-management.php:258
+#: includes/Admin/UserManagement.php:178
+msgid "<strong>Error</strong>: Please enter a valid expiry date that is in the future."
+msgstr ""
+
+#: includes/Admin/UserManagement.php:279
 msgid "Expiry cleared"
 msgstr ""
 
-#: includes/user-management.php:272
+#: includes/Admin/UserManagement.php:292
 msgid "Status"
 msgstr ""
 
-#: includes/user-management.php:273
+#: includes/Admin/UserManagement.php:293
 msgid "Expires"
 msgstr ""
 
-#: includes/user-management.php:290
+#: includes/Admin/UserManagement.php:309
 msgid "Administrator accounts are exempt from expiry"
 msgstr ""
 
-#: includes/user-management.php:307
-#: includes/user-management.php:324
+#: includes/Admin/UserManagement.php:326
+#: includes/Admin/UserManagement.php:343
 msgid "Expired"
 msgstr ""
 
-#: includes/user-management.php:311
+#: includes/Admin/UserManagement.php:330
 msgid "Active"
 msgstr ""
 
-#: includes/user-management.php:337
+#: includes/Admin/UserManagement.php:356
 msgid "Today"
 msgstr ""
 
-#: includes/user-management.php:342
+#: includes/Admin/UserManagement.php:361
 msgid "Tomorrow"
 msgstr ""
 
 #. translators: %s: number of days
-#: includes/user-management.php:347
-#: includes/user-management.php:356
+#: includes/Admin/UserManagement.php:366
+#: includes/Admin/UserManagement.php:375
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
+
+#: includes/Auth/Authentication.php:78
+msgid "<strong>Error</strong>: Your account has expired. Please contact the administrator."
+msgstr ""
