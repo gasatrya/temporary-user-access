@@ -19,7 +19,7 @@
 
 ## 🛠 Tech Stack
 
--   **PHP:** 8.0+ (Namespaced, Singleton Pattern, PSR-4 Autoloading).
+-   **PHP:** 8.0+ (Namespaced, Singleton Pattern, Manual PSR-4 Autoloading).
 -   **WordPress:** 6.4+ (Utilizes Metadata API, CRON API, and User API).
 -   **JavaScript:** Vanilla jQuery (WordPress Admin standards).
 -   **CSS:** Native CSS3 for color-coded status badges.
@@ -29,7 +29,7 @@
 
 The plugin follows a modular, object-oriented structure for maximum maintainability.
 
--   `temporary-user-access.php` — Main entry point and PSR-4 autoloader.
+-   `temporary-user-access.php` — Main entry point and manual PSR-4 autoloader.
 -   `includes/` — Core logic and classes.
     -   `Core.php` — Singleton controller that initializes the plugin.
     -   `Admin/` — User Management UI and meta field handling.

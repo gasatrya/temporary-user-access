@@ -15,11 +15,6 @@
     "phpcompatibility/php-compatibility": "^9.3",
     "phpcompatibility/phpcompatibility-wp": "^2.1"
   },
-  "autoload": {
-    "psr-4": {
-      "TemporaryUserAccess\\": "includes/"
-    }
-  },
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
@@ -48,6 +43,7 @@
   "scripts": {
     "zip": "git archive --prefix=temporary-user-access/ -o temporary-user-access.zip HEAD",
     "phpcs": "phpcs",
-    "phpcbf": "phpcbf"
+    "phpcbf": "phpcbf",
+    "i18n": "wp i18n make-pot . languages/temporary-user-access.pot"
   }
 }
