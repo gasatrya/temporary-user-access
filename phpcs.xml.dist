@@ -39,7 +39,7 @@
             <property name="prefixes" type="array">
                 <element value="tempusac"/>
                 <element value="temporary_user_access"/>
-                <element value="TemporaryUserAccess"/>
+                <element value="TempUsAc"/>
             </property>
         </properties>
     </rule>

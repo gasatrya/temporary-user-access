@@ -2,16 +2,16 @@
 /**
  * Authentication class for Temporary User Access plugin.
  *
- * @package TemporaryUserAccess\Auth
+ * @package TempUsAc\Auth
  */
 
-namespace TemporaryUserAccess\Auth;
+namespace TempUsAc\Auth;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TemporaryUserAccess\Utils\Helpers;
+use TempUsAc\Utils\Helpers;
 use WP_User;
 use WP_Error;
 

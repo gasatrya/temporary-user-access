@@ -3,7 +3,7 @@ Contributors: gasatrya
 Tags: user management, membership, expiry, temporary access, auto-delete
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -33,7 +33,7 @@ Built with a performance-first, object-oriented architecture for modern WordPres
 *   **Manual Status Control** — Revoke access immediately with a single click using the "Account Status" toggle, overriding the automated expiry date.
 *   **Real-Time Enforcement** — Expired users are blocked immediately.
  Even if they are already logged in, the system re-validates their status hourly.
-*   **Auto-Deletion System** — Choose to have expired users automatically removed from your database after a 7-day grace period.
+*   **Auto-Deletion System** — Choose to have expired users automatically removed from your database after a configurable grace period.
 *   **Content Preservation** — When a user is auto-deleted, all their posts and comments are safely reassigned to a site administrator.
 *   **Admin Immunity** — Site administrators are protected from accidental expiration to ensure you never lose access to your own site.
 *   **Clean Admin Interface** — Adds "Status" and "Expires" columns to the Users list with color-coded badges for at-a-glance management.
@@ -47,7 +47,7 @@ This plugin is built with data minimization in mind. It helps you comply with GD
 
 *   **Email Notifications** — Automated warnings sent to users before their access expires.
 *   **Bulk Actions** — Set or clear expiry dates for multiple users at once from the Users list.
-*   **Customizable Settings** — Adjust the 7-day grace period and auto-deletion batch sizes.
+*   **Customizable Settings** — Adjust the grace period and auto-deletion batch sizes.
 
 == Installation ==
 
@@ -67,9 +67,9 @@ No. For security reasons, Administrator accounts are intentionally exempt from a
 
 As soon as the expiry date passes, the user is blocked from logging in. If they have an active session, they will be logged out within one hour (due to the forced 1-hour cookie expiration for temporary users).
 
-= How does the 7-day grace period work? =
+= How does the grace period work? =
 
-If "Auto-delete" is enabled, the plugin waits exactly 7 days after the account has expired before deleting it. This gives you a window to extend their access if needed.
+If "Auto-delete" is enabled, the plugin waits for the configured number of days (default 2) after the account has expired before deleting it. This gives you a window to extend their access if needed. You can adjust this in Users > Access Settings.
 
 = Does it support timezones? =
 
@@ -86,14 +86,24 @@ No. The plugin is lightweight, uses no external dependencies, and its heaviest t
 
 == Changelog ==
 
+= 1.0.1 =
+*   Fixed: Resolved WordPress core loading violation (wp-load.php).
+*   Added: Configurable grace period setting for auto-deletion.
+*   Improved: Reduced default grace period to 2 days (48 hours).
+*   Standardized: Prefixes for namespaces, meta keys, and asset handles to 'tempusac'.
+*   Fixed: Cron initialization timing and activation schedule reliability.
+
 = 1.0.0 =
 *   Initial release.
 *   Core expiry logic and login blocking.
-*   Auto-deletion with 7-day grace period and content reassignment.
+*   Auto-deletion with grace period and content reassignment.
 *   Admin UI enhancements (custom columns and sorting).
 *   Modern namespaced architecture (PHP 8).
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Security and reliability update. Recommended for all users.
 
 = 1.0.0 =
 Initial release. No upgrade steps required.

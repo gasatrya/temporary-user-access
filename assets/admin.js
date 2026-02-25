@@ -1,7 +1,7 @@
 /**
  * Admin JavaScript for Temporary User Access plugin
  *
- * @package TemporaryUserAccess
+ * @package TempUsAc
  */
 
 (function($) {
@@ -57,12 +57,6 @@
 
 	// Initialize when document is ready
 	$(document).ready(function() {
-		// Ensure min date is at least today based on server time.
-		var $expiryDate = $('#user_expiry_date');
-		if ($expiryDate.length) {
-			$expiryDate.attr('min', tempusac_admin.today);
-		}
-
 		initExpiryClear();
 		// Set initial state
 		toggleAutoDeleteState();

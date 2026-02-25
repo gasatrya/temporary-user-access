@@ -2,10 +2,10 @@
 /**
  * Helper class for Temporary User Access plugin.
  *
- * @package TemporaryUserAccess\Utils
+ * @package TempUsAc\Utils
  */
 
-namespace TemporaryUserAccess\Utils;
+namespace TempUsAc\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -81,6 +81,16 @@ final class Helpers {
 	}
 
 	/**
+	 * Get the configured grace period in days.
+	 *
+	 * @return int Grace period in days.
+	 */
+	public static function get_grace_period(): int {
+		$grace_period = get_option( 'tempusac_grace_period', TEMPUSAC_GRACE_PERIOD_DAYS );
+		return (int) $grace_period;
+	}
+
+	/**
 	 * Log a plugin action to debug.log for debugging purposes.
 	 *
 	 * @param string $message Log message.
@@ -92,7 +102,7 @@ final class Helpers {
 		}
 
 		$context_str = empty( $context ) ? '' : ' | Context: ' . wp_json_encode( $context );
-		error_log( '[Temporary User Access] ' . $message . $context_str ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[TempUsAc] ' . $message . $context_str ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 
 	/**

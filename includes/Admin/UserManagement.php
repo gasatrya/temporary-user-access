@@ -2,17 +2,17 @@
 /**
  * User Management class for Temporary User Access plugin.
  *
- * @package TemporaryUserAccess\Admin
+ * @package TempUsAc\Admin
  */
 
-namespace TemporaryUserAccess\Admin;
+namespace TempUsAc\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TemporaryUserAccess\Utils\Helpers;
-use TemporaryUserAccess\Auth\Authentication;
+use TempUsAc\Utils\Helpers;
+use TempUsAc\Auth\Authentication;
 use DateTime;
 use WP_User;
 use WP_Error;
@@ -48,6 +48,10 @@ class UserManagement {
 		add_filter( 'manage_users_custom_column', array( $this, 'show_expiry_columns' ), 10, 3 );
 		add_filter( 'manage_users_sortable_columns', array( $this, 'make_expiry_status_sortable' ) );
 		add_action( 'pre_get_users', array( $this, 'handle_expiry_status_sorting' ) );
+
+		// AJAX handlers for auto-deletion loopback.
+		add_action( 'wp_ajax_nopriv_tempusac_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
+		add_action( 'wp_ajax_tempusac_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
 	}
 
 	/**
@@ -68,13 +72,13 @@ class UserManagement {
 			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
 
 			<tr>
-				<th><label for="user_account_status"><?php esc_html_e( 'Account Status', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'temporary-user-access' ); ?></label></th>
 				<td>
-					<select name="user_account_status" id="user_account_status">
-						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_ACTIVE ); ?>"><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></option>
-						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>"><?php esc_html_e( 'Expired (Revoke Access)', 'temporary-user-access' ); ?></option>
-					</select>
-					<p class="description"><?php esc_html_e( 'Manually override access status.', 'temporary-user-access' ); ?></p>
+					<label for="user_account_status">
+						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" />
+						<?php esc_html_e( 'Revoke access manually', 'temporary-user-access' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of any expiry date.', 'temporary-user-access' ); ?></p>
 				</td>
 			</tr>
 
@@ -94,7 +98,7 @@ class UserManagement {
 						<input type="checkbox" name="user_auto_delete" id="user_auto_delete" value="1" />
 						<?php
 						/* translators: %d: number of days for grace period */
-						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), TEMPUSAC_GRACE_PERIOD_DAYS ) );
+						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), Helpers::get_grace_period() ) );
 						?>
 					</label>
 					<p class="description">
@@ -117,11 +121,25 @@ class UserManagement {
 			return;
 		}
 
-		$expiry_date = get_user_meta( $user->ID, TEMPUSAC_USER_EXPIRY_DATE, true );
+		$expiry_date = (string) get_user_meta( $user->ID, TEMPUSAC_USER_EXPIRY_DATE, true );
 		$auto_delete = get_user_meta( $user->ID, TEMPUSAC_USER_AUTO_DELETE, true );
 		$status      = get_user_meta( $user->ID, TEMPUSAC_USER_ACCOUNT_STATUS, true );
 		$status      = empty( $status ) ? TEMPUSAC_STATUS_ACTIVE : $status;
 		$today       = current_time( 'Y-m-d' );
+
+		// Calculate effective status.
+		$is_expired         = Authentication::is_user_expired( $user->ID );
+		$is_expired_by_date = false;
+
+		if ( ! empty( $expiry_date ) ) {
+			$expiry_timestamp = Helpers::get_expiry_timestamp( $expiry_date );
+			if ( $expiry_timestamp && $expiry_timestamp <= Helpers::get_current_timestamp() ) {
+				$is_expired_by_date = true;
+			}
+		}
+
+		// Allow current expired date in the date picker min attribute.
+		$min_date = ( ! empty( $expiry_date ) && $expiry_date < $today ) ? $expiry_date : $today;
 
 		?>
 		<h3><?php esc_html_e( 'Account Expiry Settings', 'temporary-user-access' ); ?></h3>
@@ -130,13 +148,30 @@ class UserManagement {
 			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
 
 			<tr>
-				<th><label for="user_account_status"><?php esc_html_e( 'Account Status', 'temporary-user-access' ); ?></label></th>
+				<th><?php esc_html_e( 'Current Access Status', 'temporary-user-access' ); ?></th>
 				<td>
-					<select name="user_account_status" id="user_account_status">
-						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_ACTIVE ); ?>" <?php selected( $status, TEMPUSAC_STATUS_ACTIVE ); ?>><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></option>
-						<option value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" <?php selected( $status, TEMPUSAC_STATUS_EXPIRED ); ?>><?php esc_html_e( 'Expired (Revoke Access)', 'temporary-user-access' ); ?></option>
-					</select>
-					<p class="description"><?php esc_html_e( 'Manually override access status.', 'temporary-user-access' ); ?></p>
+					<?php if ( $is_expired ) : ?>
+						<span class="expiry-status expired"><?php esc_html_e( 'Expired', 'temporary-user-access' ); ?></span>
+						<?php if ( $is_expired_by_date && TEMPUSAC_STATUS_ACTIVE === $status ) : ?>
+							<p class="description">
+								<span class="dashicons dashicons-warning" style="color: #dc3232; vertical-align: middle;"></span>
+								<?php esc_html_e( 'Note: This account is currently expired because the expiry date has passed.', 'temporary-user-access' ); ?>
+							</p>
+						<?php endif; ?>
+					<?php else : ?>
+						<span class="expiry-status active"><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></span>
+					<?php endif; ?>
+				</td>
+			</tr>
+
+			<tr>
+				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'temporary-user-access' ); ?></label></th>
+				<td>
+					<label for="user_account_status">
+						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" <?php checked( $status, TEMPUSAC_STATUS_EXPIRED ); ?> />
+						<?php esc_html_e( 'Revoke access manually', 'temporary-user-access' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of their expiry date.', 'temporary-user-access' ); ?></p>
 				</td>
 			</tr>
 
@@ -144,8 +179,8 @@ class UserManagement {
 				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'temporary-user-access' ); ?></label></th>
 				<td>
 					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" 
-							value="<?php echo esc_attr( (string) $expiry_date ); ?>"
-							min="<?php echo esc_attr( $today ); ?>" />
+							value="<?php echo esc_attr( $expiry_date ); ?>"
+							min="<?php echo esc_attr( $min_date ); ?>" />
 
 					<?php if ( ! empty( $expiry_date ) ) : ?>
 						<button type="button" id="user_expiry_clear_btn" class="button">
@@ -171,7 +206,7 @@ class UserManagement {
 								<?php checked( $auto_delete, '1' ); ?> />
 						<?php
 						/* translators: %d: number of days for grace period */
-						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), TEMPUSAC_GRACE_PERIOD_DAYS ) );
+						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), Helpers::get_grace_period() ) );
 						?>
 					</label>
 					<p class="description">
@@ -254,12 +289,14 @@ class UserManagement {
 			return;
 		}
 
-		// Save account status.
-		if ( isset( $_POST['user_account_status'] ) ) {
-			$status = sanitize_text_field( wp_unslash( $_POST['user_account_status'] ) );
-			if ( in_array( $status, array( TEMPUSAC_STATUS_ACTIVE, TEMPUSAC_STATUS_EXPIRED ), true ) ) {
-				update_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, $status );
-			}
+		// Save account status (Manual Revocation).
+		// Checkboxes are only present in POST if checked. Use nonce to verify intent to save.
+		if ( isset( $_POST['tempusac_expiry_nonce'] ) ) {
+			$status = isset( $_POST['user_account_status'] ) && TEMPUSAC_STATUS_EXPIRED === $_POST['user_account_status']
+				? TEMPUSAC_STATUS_EXPIRED
+				: TEMPUSAC_STATUS_ACTIVE;
+
+			update_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, $status );
 		}
 
 		// Save expiry date.
@@ -299,7 +336,7 @@ class UserManagement {
 
 		// Enqueue admin styles.
 		wp_enqueue_style(
-			'wp-tempusac-admin',
+			'tempusac-admin',
 			plugins_url( 'assets/admin.css', TEMPUSAC_BASENAME ),
 			array(),
 			TEMPUSAC_VERSION
@@ -308,7 +345,7 @@ class UserManagement {
 		// Enqueue admin JavaScript for profile pages.
 		if ( 'users.php' !== $hook ) {
 			wp_enqueue_script(
-				'wp-tempusac-admin',
+				'tempusac-admin',
 				plugins_url( 'assets/admin.js', TEMPUSAC_BASENAME ),
 				array( 'jquery' ),
 				TEMPUSAC_VERSION,
@@ -317,7 +354,7 @@ class UserManagement {
 
 			// Localize script to pass data from PHP to JavaScript.
 			wp_localize_script(
-				'wp-tempusac-admin',
+				'tempusac-admin',
 				'tempusac_admin',
 				array(
 					'expiry_cleared_text' => __( 'Expiry cleared', 'temporary-user-access' ),
@@ -461,5 +498,54 @@ class UserManagement {
 		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required for user sorting functionality.
 		$query->query_vars['meta_key'] = TEMPUSAC_USER_EXPIRY_DATE;
 		$query->query_vars['order']    = $order;
+	}
+
+	/**
+	 * AJAX handler for processing auto-deletion.
+	 * This provides the necessary admin context for wp_delete_user().
+	 */
+	public function process_auto_deletion(): void {
+		// Verify token.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Using custom token for loopback security.
+		$token = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
+		if ( empty( $token ) || get_transient( 'tempusac_cron_token' ) !== $token ) {
+			wp_send_json_error( 'Invalid token' );
+		}
+
+		// Verify user IDs.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Using custom token for loopback security.
+		$user_ids = isset( $_POST['user_ids'] ) ? array_map( 'intval', (array) $_POST['user_ids'] ) : array();
+		if ( empty( $user_ids ) ) {
+			wp_send_json_error( 'No user IDs provided' );
+		}
+
+		// Delete the token to prevent reuse.
+		delete_transient( 'tempusac_cron_token' );
+
+		$results = array();
+
+		foreach ( $user_ids as $user_id ) {
+			// Find a valid administrator to reassign content to.
+			$admin_users = get_users(
+				array(
+					'role'   => 'administrator',
+					'number' => 1,
+					'fields' => 'ID',
+				)
+			);
+			$reassign_id = ! empty( $admin_users ) ? $admin_users[0] : 1;
+
+			// Double check if user is not an admin.
+			if ( Helpers::is_user_admin( $user_id ) ) {
+				$results[ $user_id ] = 'skipped_admin';
+				continue;
+			}
+
+			// wp_delete_user is available here because we are in admin-ajax.php.
+			$deleted             = wp_delete_user( $user_id, $reassign_id );
+			$results[ $user_id ] = $deleted ? 'success' : 'failed';
+		}
+
+		wp_send_json_success( $results );
 	}
 }
