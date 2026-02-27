@@ -1,10 +1,10 @@
-# GEMINI.md - Temporary User Access
+# GEMINI.md - GateFlow
 
-This file provides context and instructions for AI agents working on the **Temporary User Access** WordPress plugin.
+This file provides context and instructions for AI agents working on the **GateFlow** WordPress plugin.
 
 ## Project Overview
 
-**Temporary User Access** is a security-focused WordPress plugin designed to automate the lifecycle of temporary guest accounts. It allows administrators to set expiration dates for users, ensuring access is revoked automatically.
+**GateFlow** is a security-focused WordPress plugin designed to automate the lifecycle of temporary guest accounts. It allows administrators to set expiration dates for users, ensuring access is revoked automatically.
 
 ### Key Technologies
 - **Language:** PHP 8.0+ (Namespaced, OOP).

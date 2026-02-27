@@ -1,17 +1,17 @@
 <?php
 /**
- * Settings class for Temporary User Access plugin.
+ * Settings class for GateFlow plugin.
  *
- * @package TempUsAc\Admin
+ * @package GateFlow\Admin
  */
 
-namespace TempUsAc\Admin;
+namespace GateFlow\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TempUsAc\Utils\Helpers;
+use GateFlow\Utils\Helpers;
 
 /**
  * Settings class
@@ -38,10 +38,10 @@ class Settings {
 	 */
 	public function add_settings_page(): void {
 		add_users_page(
-			__( 'User Access Settings', 'temporary-user-access' ),
-			__( 'Access Settings', 'temporary-user-access' ),
+			__( 'GateFlow Settings', 'gateflow' ),
+			__( 'GateFlow', 'gateflow' ),
 			'manage_options',
-			'tempusac-settings',
+			'gateflow-settings',
 			array( $this, 'render_settings_page' )
 		);
 	}
@@ -51,28 +51,28 @@ class Settings {
 	 */
 	public function register_settings(): void {
 		register_setting(
-			'tempusac_settings_group',
-			'tempusac_grace_period',
+			'gateflow_settings_group',
+			'gateflow_grace_period',
 			array(
 				'type'              => 'integer',
 				'sanitize_callback' => array( $this, 'sanitize_grace_period' ),
-				'default'           => TEMPUSAC_GRACE_PERIOD_DAYS,
+				'default'           => GATEFLOW_GRACE_PERIOD_DAYS,
 			)
 		);
 
 		add_settings_section(
-			'tempusac_auto_delete_section',
-			__( 'Auto-deletion Settings', 'temporary-user-access' ),
+			'gateflow_auto_delete_section',
+			__( 'Auto-deletion Settings', 'gateflow' ),
 			null,
-			'tempusac-settings'
+			'gateflow-settings'
 		);
 
 		add_settings_field(
-			'tempusac_grace_period',
-			__( 'Grace Period (Days)', 'temporary-user-access' ),
+			'gateflow_grace_period',
+			__( 'Grace Period (Days)', 'gateflow' ),
 			array( $this, 'render_grace_period_field' ),
-			'tempusac-settings',
-			'tempusac_auto_delete_section'
+			'gateflow-settings',
+			'gateflow_auto_delete_section'
 		);
 	}
 
@@ -100,9 +100,9 @@ class Settings {
 	public function render_grace_period_field(): void {
 		$value = Helpers::get_grace_period();
 		?>
-		<input type="number" name="tempusac_grace_period" value="<?php echo (int) $value; ?>" class="small-text" min="0" max="365" />
+		<input type="number" name="gateflow_grace_period" value="<?php echo (int) $value; ?>" class="small-text" min="0" max="365" />
 		<p class="description">
-			<?php esc_html_e( 'Number of days to wait after a user account expires before it is automatically deleted.', 'temporary-user-access' ); ?>
+			<?php esc_html_e( 'Number of days to wait after a user account expires before it is automatically deleted.', 'gateflow' ); ?>
 		</p>
 		<?php
 	}
@@ -119,8 +119,8 @@ class Settings {
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( 'tempusac_settings_group' );
-				do_settings_sections( 'tempusac-settings' );
+				settings_fields( 'gateflow_settings_group' );
+				do_settings_sections( 'gateflow-settings' );
 				submit_button();
 				?>
 			</form>

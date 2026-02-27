@@ -1,11 +1,11 @@
 <?php
 /**
- * Helper class for Temporary User Access plugin.
+ * Helper class for GateFlow plugin.
  *
- * @package TempUsAc\Utils
+ * @package GateFlow\Utils
  */
 
-namespace TempUsAc\Utils;
+namespace GateFlow\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -86,7 +86,7 @@ final class Helpers {
 	 * @return int Grace period in days.
 	 */
 	public static function get_grace_period(): int {
-		$grace_period = get_option( 'tempusac_grace_period', TEMPUSAC_GRACE_PERIOD_DAYS );
+		$grace_period = get_option( 'gateflow_grace_period', GATEFLOW_GRACE_PERIOD_DAYS );
 		return (int) $grace_period;
 	}
 
@@ -102,7 +102,7 @@ final class Helpers {
 		}
 
 		$context_str = empty( $context ) ? '' : ' | Context: ' . wp_json_encode( $context );
-		error_log( '[TempUsAc] ' . $message . $context_str ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[GateFlow] ' . $message . $context_str ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 
 	/**

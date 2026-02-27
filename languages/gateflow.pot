@@ -2,40 +2,40 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Temporary User Access 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/temporary-user-access\n"
+"Project-Id-Version: GateFlow 1.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gateflow\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-23T17:54:40+00:00\n"
+"POT-Creation-Date: 2026-02-28T12:00:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: temporary-user-access\n"
+"X-Domain: gateflow\n"
 
 #. Plugin Name of the plugin
-#: temporary-user-access.php
-msgid "Temporary User Access"
+#: gateflow.php
+msgid "GateFlow"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: temporary-user-access.php
-msgid "https://www.ctaflow.com/temporary-user-access"
+#: gateflow.php
+msgid "https://www.ctaflow.com/plugins/gateflow"
 msgstr ""
 
 #. Description of the plugin
-#: temporary-user-access.php
+#: gateflow.php
 msgid "Extend WordPress user management with expiration functionality for temporary user accounts. Set expiry dates, enable auto-deletion, and keep your user database clean."
 msgstr ""
 
 #. Author of the plugin
-#: temporary-user-access.php
+#: gateflow.php
 msgid "Ga Satrya"
 msgstr ""
 
 #. Author URI of the plugin
-#: temporary-user-access.php
+#: gateflow.php
 msgid "https://www.ctaflow.com/"
 msgstr ""
 

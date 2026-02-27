@@ -1,17 +1,17 @@
 <?php
 /**
- * Authentication class for Temporary User Access plugin.
+ * Authentication class for GateFlow plugin.
  *
- * @package TempUsAc\Auth
+ * @package GateFlow\Auth
  */
 
-namespace TempUsAc\Auth;
+namespace GateFlow\Auth;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TempUsAc\Utils\Helpers;
+use GateFlow\Utils\Helpers;
 use WP_User;
 use WP_Error;
 
@@ -43,12 +43,12 @@ class Authentication {
 	 */
 	public static function is_user_expired( int $user_id ): bool {
 		// Check manual status first.
-		$status = get_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, true );
-		if ( TEMPUSAC_STATUS_EXPIRED === $status ) {
+		$status = get_user_meta( $user_id, GATEFLOW_USER_ACCOUNT_STATUS, true );
+		if ( GATEFLOW_STATUS_EXPIRED === $status ) {
 			return true;
 		}
 
-		$expiry_date = get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
+		$expiry_date = get_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE, true );
 		// Check if expiry date has passed.
 		if ( ! empty( $expiry_date ) ) {
 			$current_time     = Helpers::get_current_timestamp();
@@ -85,7 +85,7 @@ class Authentication {
 		if ( self::is_user_expired( $user->ID ) ) {
 			return new WP_Error(
 				'account_expired',
-				__( '<strong>Error</strong>: Your account has expired. Please contact the administrator.', 'temporary-user-access' )
+				__( '<strong>Error</strong>: Your account has expired. Please contact the administrator.', 'gateflow' )
 			);
 		}
 
@@ -106,7 +106,7 @@ class Authentication {
 		}
 
 		// Check if user has an expiry date set.
-		$expiry_date = get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
+		$expiry_date = get_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE, true );
 
 		if ( ! empty( $expiry_date ) ) {
 			// Set 1-hour expiration for users with expiry dates.

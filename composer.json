@@ -1,5 +1,5 @@
 {
-  "name": "gasatrya/temporary-user-access",
+  "name": "gasatrya/gateflow",
   "description": "Create temporary users with expiration dates for secure, time-limited access to your WordPress site.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
@@ -41,9 +41,9 @@
     ]
   },
   "scripts": {
-    "zip": "git archive --prefix=temporary-user-access/ -o temporary-user-access.zip HEAD",
+    "zip": "git archive --prefix=gateflow/ -o gateflow.zip HEAD",
     "phpcs": "phpcs",
     "phpcbf": "phpcbf",
-    "i18n": "wp i18n make-pot . languages/temporary-user-access.pot"
+    "i18n": "wp i18n make-pot . languages/gateflow.pot"
   }
 }

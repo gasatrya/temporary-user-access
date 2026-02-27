@@ -1,18 +1,18 @@
 <?php
 /**
- * User Management class for Temporary User Access plugin.
+ * User Management class for GateFlow plugin.
  *
- * @package TempUsAc\Admin
+ * @package GateFlow\Admin
  */
 
-namespace TempUsAc\Admin;
+namespace GateFlow\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TempUsAc\Utils\Helpers;
-use TempUsAc\Auth\Authentication;
+use GateFlow\Utils\Helpers;
+use GateFlow\Auth\Authentication;
 use DateTime;
 use WP_User;
 use WP_Error;
@@ -50,8 +50,8 @@ class UserManagement {
 		add_action( 'pre_get_users', array( $this, 'handle_expiry_status_sorting' ) );
 
 		// AJAX handlers for auto-deletion loopback.
-		add_action( 'wp_ajax_nopriv_tempusac_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
-		add_action( 'wp_ajax_tempusac_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
+		add_action( 'wp_ajax_nopriv_gateflow_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
+		add_action( 'wp_ajax_gateflow_process_auto_deletion', array( $this, 'process_auto_deletion' ) );
 	}
 
 	/**
@@ -66,43 +66,43 @@ class UserManagement {
 		$today = current_time( 'Y-m-d' );
 
 		?>
-		<h3><?php esc_html_e( 'Account Expiry Settings', 'temporary-user-access' ); ?></h3>
+		<h3><?php esc_html_e( 'Account Expiry Settings', 'gateflow' ); ?></h3>
 
 		<table class="form-table">
-			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
+			<?php wp_nonce_field( 'gateflow_save_user_expiry', 'gateflow_expiry_nonce' ); ?>
 
 			<tr>
-				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'gateflow' ); ?></label></th>
 				<td>
 					<label for="user_account_status">
-						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" />
-						<?php esc_html_e( 'Revoke access manually', 'temporary-user-access' ); ?>
+						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( GATEFLOW_STATUS_EXPIRED ); ?>" />
+						<?php esc_html_e( 'Revoke access manually', 'gateflow' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of any expiry date.', 'temporary-user-access' ); ?></p>
+					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of any expiry date.', 'gateflow' ); ?></p>
 				</td>
 			</tr>
 
 			<tr>
-				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'gateflow' ); ?></label></th>
 				<td>
 					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" 
 									min="<?php echo esc_attr( $today ); ?>" />
-					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'temporary-user-access' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'gateflow' ); ?></p>
 				</td>
 			</tr>
 
 			<tr>
-				<th><label for="user_auto_delete"><?php esc_html_e( 'Auto-delete Settings', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_auto_delete"><?php esc_html_e( 'Auto-delete Settings', 'gateflow' ); ?></label></th>
 				<td>
 					<label for="user_auto_delete">
 						<input type="checkbox" name="user_auto_delete" id="user_auto_delete" value="1" />
 						<?php
 						/* translators: %d: number of days for grace period */
-						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), Helpers::get_grace_period() ) );
+						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'gateflow' ), Helpers::get_grace_period() ) );
 						?>
 					</label>
 					<p class="description">
-						<?php esc_html_e( 'User account will be permanently deleted. Posts will be reassigned to admin.', 'temporary-user-access' ); ?>
+						<?php esc_html_e( 'User account will be permanently deleted. Posts will be reassigned to admin.', 'gateflow' ); ?>
 					</p>
 				</td>
 			</tr>
@@ -121,10 +121,10 @@ class UserManagement {
 			return;
 		}
 
-		$expiry_date = (string) get_user_meta( $user->ID, TEMPUSAC_USER_EXPIRY_DATE, true );
-		$auto_delete = get_user_meta( $user->ID, TEMPUSAC_USER_AUTO_DELETE, true );
-		$status      = get_user_meta( $user->ID, TEMPUSAC_USER_ACCOUNT_STATUS, true );
-		$status      = empty( $status ) ? TEMPUSAC_STATUS_ACTIVE : $status;
+		$expiry_date = (string) get_user_meta( $user->ID, GATEFLOW_USER_EXPIRY_DATE, true );
+		$auto_delete = get_user_meta( $user->ID, GATEFLOW_USER_AUTO_DELETE, true );
+		$status      = get_user_meta( $user->ID, GATEFLOW_USER_ACCOUNT_STATUS, true );
+		$status      = empty( $status ) ? GATEFLOW_STATUS_ACTIVE : $status;
 		$today       = current_time( 'Y-m-d' );
 
 		// Calculate effective status.
@@ -142,41 +142,41 @@ class UserManagement {
 		$min_date = ( ! empty( $expiry_date ) && $expiry_date < $today ) ? $expiry_date : $today;
 
 		?>
-		<h3><?php esc_html_e( 'Account Expiry Settings', 'temporary-user-access' ); ?></h3>
+		<h3><?php esc_html_e( 'Account Expiry Settings', 'gateflow' ); ?></h3>
 
 		<table class="form-table">
-			<?php wp_nonce_field( 'tempusac_save_user_expiry', 'tempusac_expiry_nonce' ); ?>
+			<?php wp_nonce_field( 'gateflow_save_user_expiry', 'gateflow_expiry_nonce' ); ?>
 
 			<tr>
-				<th><?php esc_html_e( 'Current Access Status', 'temporary-user-access' ); ?></th>
+				<th><?php esc_html_e( 'Current Access Status', 'gateflow' ); ?></th>
 				<td>
 					<?php if ( $is_expired ) : ?>
-						<span class="expiry-status expired"><?php esc_html_e( 'Expired', 'temporary-user-access' ); ?></span>
-						<?php if ( $is_expired_by_date && TEMPUSAC_STATUS_ACTIVE === $status ) : ?>
+						<span class="expiry-status expired"><?php esc_html_e( 'Expired', 'gateflow' ); ?></span>
+						<?php if ( $is_expired_by_date && GATEFLOW_STATUS_ACTIVE === $status ) : ?>
 							<p class="description">
 								<span class="dashicons dashicons-warning" style="color: #dc3232; vertical-align: middle;"></span>
-								<?php esc_html_e( 'Note: This account is currently expired because the expiry date has passed.', 'temporary-user-access' ); ?>
+								<?php esc_html_e( 'Note: This account is currently expired because the expiry date has passed.', 'gateflow' ); ?>
 							</p>
 						<?php endif; ?>
 					<?php else : ?>
-						<span class="expiry-status active"><?php esc_html_e( 'Active', 'temporary-user-access' ); ?></span>
+						<span class="expiry-status active"><?php esc_html_e( 'Active', 'gateflow' ); ?></span>
 					<?php endif; ?>
 				</td>
 			</tr>
 
 			<tr>
-				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_account_status"><?php esc_html_e( 'Manual Revocation', 'gateflow' ); ?></label></th>
 				<td>
 					<label for="user_account_status">
-						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( TEMPUSAC_STATUS_EXPIRED ); ?>" <?php checked( $status, TEMPUSAC_STATUS_EXPIRED ); ?> />
-						<?php esc_html_e( 'Revoke access manually', 'temporary-user-access' ); ?>
+						<input type="checkbox" name="user_account_status" id="user_account_status" value="<?php echo esc_attr( GATEFLOW_STATUS_EXPIRED ); ?>" <?php checked( $status, GATEFLOW_STATUS_EXPIRED ); ?> />
+						<?php esc_html_e( 'Revoke access manually', 'gateflow' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of their expiry date.', 'temporary-user-access' ); ?></p>
+					<p class="description"><?php esc_html_e( 'If checked, this user will be unable to log in immediately, regardless of their expiry date.', 'gateflow' ); ?></p>
 				</td>
 			</tr>
 
 			<tr>
-				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_expiry_date"><?php esc_html_e( 'Account Expiry Date', 'gateflow' ); ?></label></th>
 				<td>
 					<input type="date" name="user_expiry_date" id="user_expiry_date" class="regular-text" 
 							value="<?php echo esc_attr( $expiry_date ); ?>"
@@ -184,33 +184,33 @@ class UserManagement {
 
 					<?php if ( ! empty( $expiry_date ) ) : ?>
 						<button type="button" id="user_expiry_clear_btn" class="button">
-							<?php esc_html_e( 'Clear', 'temporary-user-access' ); ?>
+							<?php esc_html_e( 'Clear', 'gateflow' ); ?>
 						</button>
 						<p>
 							<label for="user_expiry_clear">
 								<input type="checkbox" name="user_expiry_clear" id="user_expiry_clear" value="1" />
-								<?php esc_html_e( 'Clear expiry date (make account permanent)', 'temporary-user-access' ); ?>
+								<?php esc_html_e( 'Clear expiry date (make account permanent)', 'gateflow' ); ?>
 							</label>
 						</p>
 						<span id="user_expiry_clear_msg" class="screen-reader-text" aria-live="polite"></span>
 					<?php endif; ?>
-					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'temporary-user-access' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Optional: Set when this account should expire automatically.', 'gateflow' ); ?></p>
 				</td>
 			</tr>
 
 			<tr>
-				<th><label for="user_auto_delete"><?php esc_html_e( 'Auto-delete Settings', 'temporary-user-access' ); ?></label></th>
+				<th><label for="user_auto_delete"><?php esc_html_e( 'Auto-delete Settings', 'gateflow' ); ?></label></th>
 				<td>
 					<label for="user_auto_delete">
 						<input type="checkbox" name="user_auto_delete" id="user_auto_delete" value="1" 
 								<?php checked( $auto_delete, '1' ); ?> />
 						<?php
 						/* translators: %d: number of days for grace period */
-						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'temporary-user-access' ), Helpers::get_grace_period() ) );
+						echo esc_html( sprintf( __( 'Auto-delete user after expiry (%d days grace period)', 'gateflow' ), Helpers::get_grace_period() ) );
 						?>
 					</label>
 					<p class="description">
-						<?php esc_html_e( 'User account will be permanently deleted. Posts will be reassigned to admin.', 'temporary-user-access' ); ?>
+						<?php esc_html_e( 'User account will be permanently deleted. Posts will be reassigned to admin.', 'gateflow' ); ?>
 					</p>
 				</td>
 			</tr>
@@ -236,8 +236,8 @@ class UserManagement {
 		}
 
 		// Verify nonce. Security check to prevent unauthorized access.
-		if ( ! isset( $_POST['tempusac_expiry_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['tempusac_expiry_nonce'] ) ), 'tempusac_save_user_expiry' ) ) {
-			$errors->add( 'tempusac_security_fail', __( '<strong>Error</strong>: Security check failed. Please try again.', 'temporary-user-access' ) );
+		if ( ! isset( $_POST['gateflow_expiry_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gateflow_expiry_nonce'] ) ), 'gateflow_save_user_expiry' ) ) {
+			$errors->add( 'gateflow_security_fail', __( '<strong>Error</strong>: Security check failed. Please try again.', 'gateflow' ) );
 			return $errors;
 		}
 
@@ -245,7 +245,7 @@ class UserManagement {
 		if ( isset( $_POST['user_expiry_date'] ) ) {
 			$expiry_date = sanitize_text_field( wp_unslash( $_POST['user_expiry_date'] ) );
 			if ( ! empty( $expiry_date ) && ! Helpers::validate_date( $expiry_date ) ) {
-				$errors->add( 'invalid_expiry_date', __( '<strong>Error</strong>: Please enter a valid expiry date that is in the future.', 'temporary-user-access' ) );
+				$errors->add( 'invalid_expiry_date', __( '<strong>Error</strong>: Please enter a valid expiry date that is in the future.', 'gateflow' ) );
 			}
 		}
 
@@ -264,7 +264,7 @@ class UserManagement {
 		}
 
 		// Verify nonce. Essential for preventing CSRF attacks.
-		if ( ! isset( $_POST['tempusac_expiry_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['tempusac_expiry_nonce'] ) ), 'tempusac_save_user_expiry' ) ) {
+		if ( ! isset( $_POST['gateflow_expiry_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gateflow_expiry_nonce'] ) ), 'gateflow_save_user_expiry' ) ) {
 			return;
 		}
 
@@ -291,33 +291,33 @@ class UserManagement {
 
 		// Save account status (Manual Revocation).
 		// Checkboxes are only present in POST if checked. Use nonce to verify intent to save.
-		if ( isset( $_POST['tempusac_expiry_nonce'] ) ) {
-			$status = isset( $_POST['user_account_status'] ) && TEMPUSAC_STATUS_EXPIRED === $_POST['user_account_status']
-				? TEMPUSAC_STATUS_EXPIRED
-				: TEMPUSAC_STATUS_ACTIVE;
+		if ( isset( $_POST['gateflow_expiry_nonce'] ) ) {
+			$status = isset( $_POST['user_account_status'] ) && GATEFLOW_STATUS_EXPIRED === $_POST['user_account_status']
+				? GATEFLOW_STATUS_EXPIRED
+				: GATEFLOW_STATUS_ACTIVE;
 
-			update_user_meta( $user_id, TEMPUSAC_USER_ACCOUNT_STATUS, $status );
+			update_user_meta( $user_id, GATEFLOW_USER_ACCOUNT_STATUS, $status );
 		}
 
 		// Save expiry date.
 		// If admin checked clear expiry, remove meta regardless of date input.
 		if ( isset( $_POST['user_expiry_clear'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['user_expiry_clear'] ) ) ) {
-			delete_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE );
+			delete_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE );
 			Helpers::log( 'User expiry cleared', array( 'user_id' => $user_id ) );
 		} elseif ( isset( $_POST['user_expiry_date'] ) ) {
 			$expiry_date = sanitize_text_field( wp_unslash( $_POST['user_expiry_date'] ) );
 			if ( empty( $expiry_date ) ) {
-				delete_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE );
+				delete_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE );
 			} else {
-				update_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, $expiry_date );
+				update_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE, $expiry_date );
 			}
 		}
 
 		// Save auto-delete setting.
 		if ( isset( $_POST['user_auto_delete'] ) ) {
-			update_user_meta( $user_id, TEMPUSAC_USER_AUTO_DELETE, '1' );
+			update_user_meta( $user_id, GATEFLOW_USER_AUTO_DELETE, '1' );
 		} else {
-			delete_user_meta( $user_id, TEMPUSAC_USER_AUTO_DELETE );
+			delete_user_meta( $user_id, GATEFLOW_USER_AUTO_DELETE );
 		}
 	}
 
@@ -336,28 +336,28 @@ class UserManagement {
 
 		// Enqueue admin styles.
 		wp_enqueue_style(
-			'tempusac-admin',
-			plugins_url( 'assets/admin.css', TEMPUSAC_BASENAME ),
+			'gateflow-admin',
+			plugins_url( 'assets/admin.css', GATEFLOW_BASENAME ),
 			array(),
-			TEMPUSAC_VERSION
+			GATEFLOW_VERSION
 		);
 
 		// Enqueue admin JavaScript for profile pages.
 		if ( 'users.php' !== $hook ) {
 			wp_enqueue_script(
-				'tempusac-admin',
-				plugins_url( 'assets/admin.js', TEMPUSAC_BASENAME ),
+				'gateflow-admin',
+				plugins_url( 'assets/admin.js', GATEFLOW_BASENAME ),
 				array( 'jquery' ),
-				TEMPUSAC_VERSION,
+				GATEFLOW_VERSION,
 				true
 			);
 
 			// Localize script to pass data from PHP to JavaScript.
 			wp_localize_script(
-				'tempusac-admin',
-				'tempusac_admin',
+				'gateflow-admin',
+				'gateflow_admin',
 				array(
-					'expiry_cleared_text' => __( 'Expiry cleared', 'temporary-user-access' ),
+					'expiry_cleared_text' => __( 'Expiry cleared', 'gateflow' ),
 					'today'               => current_time( 'Y-m-d' ),
 				)
 			);
@@ -371,8 +371,8 @@ class UserManagement {
 	 * @return array
 	 */
 	public function add_expiry_columns( array $columns ): array {
-		$columns['expiry_status'] = __( 'Status', 'temporary-user-access' );
-		$columns['expires']       = __( 'Expires', 'temporary-user-access' );
+		$columns['expiry_status'] = __( 'Status', 'gateflow' );
+		$columns['expires']       = __( 'Expires', 'gateflow' );
 		return $columns;
 	}
 
@@ -388,7 +388,7 @@ class UserManagement {
 		// Skip for admin users.
 		if ( Helpers::is_user_admin( $user_id ) ) {
 			if ( 'expiry_status' === $column_name ) {
-				return '<span class="dashicons dashicons-shield" title="' . esc_attr__( 'Administrator accounts are exempt from expiry', 'temporary-user-access' ) . '"></span>';
+				return '<span class="dashicons dashicons-shield" title="' . esc_attr__( 'Administrator accounts are exempt from expiry', 'gateflow' ) . '"></span>';
 			}
 			if ( 'expires' === $column_name ) {
 				return '—';
@@ -399,15 +399,15 @@ class UserManagement {
 		// Expiry Status column.
 		if ( 'expiry_status' === $column_name ) {
 			if ( Authentication::is_user_expired( $user_id ) ) {
-				return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'temporary-user-access' ) . '</span>';
+				return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'gateflow' ) . '</span>';
 			}
 
-			return '<span class="expiry-status active">' . esc_html__( 'Active', 'temporary-user-access' ) . '</span>';
+			return '<span class="expiry-status active">' . esc_html__( 'Active', 'gateflow' ) . '</span>';
 		}
 
 		// Expires column.
 		if ( 'expires' === $column_name ) {
-			$expiry_date = (string) get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
+			$expiry_date = (string) get_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE, true );
 
 			if ( empty( $expiry_date ) ) {
 				return '—';
@@ -417,7 +417,7 @@ class UserManagement {
 			$current_time     = Helpers::get_current_timestamp();
 
 			if ( $expiry_timestamp && $expiry_timestamp <= $current_time ) {
-				return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'temporary-user-access' ) . '</span>';
+				return '<span class="expiry-status expired">' . esc_html__( 'Expired', 'gateflow' ) . '</span>';
 			}
 
 			// Calculate days difference using date comparison.
@@ -430,17 +430,17 @@ class UserManagement {
 
 				if ( 0 === $days ) {
 					// Today.
-					return esc_html__( 'Today', 'temporary-user-access' );
+					return esc_html__( 'Today', 'gateflow' );
 				}
 
 				if ( 1 === $days ) {
 					// Tomorrow.
-					return esc_html__( 'Tomorrow', 'temporary-user-access' );
+					return esc_html__( 'Tomorrow', 'gateflow' );
 				}
 
 				if ( $days > 1 ) {
 					/* translators: %s: number of days */
-					return esc_html( sprintf( _n( '%d day', '%d days', $days, 'temporary-user-access' ), $days ) );
+					return esc_html( sprintf( _n( '%d day', '%d days', $days, 'gateflow' ), $days ) );
 				}
 			}
 
@@ -449,7 +449,7 @@ class UserManagement {
 			$days      = (int) floor( $time_diff / DAY_IN_SECONDS );
 
 			/* translators: %s: number of days */
-			return esc_html( sprintf( _n( '%d day', '%d days', $days, 'temporary-user-access' ), $days ) );
+			return esc_html( sprintf( _n( '%d day', '%d days', $days, 'gateflow' ), $days ) );
 		}
 
 		return $value;
@@ -485,18 +485,18 @@ class UserManagement {
 		$query->query_vars['meta_query'] = array(
 			'relation' => 'OR',
 			array(
-				'key'     => TEMPUSAC_USER_EXPIRY_DATE,
+				'key'     => GATEFLOW_USER_EXPIRY_DATE,
 				'compare' => 'EXISTS',
 			),
 			array(
-				'key'     => TEMPUSAC_USER_EXPIRY_DATE,
+				'key'     => GATEFLOW_USER_EXPIRY_DATE,
 				'compare' => 'NOT EXISTS',
 			),
 		);
 
 		$query->query_vars['orderby'] = 'meta_value';
 		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required for user sorting functionality.
-		$query->query_vars['meta_key'] = TEMPUSAC_USER_EXPIRY_DATE;
+		$query->query_vars['meta_key'] = GATEFLOW_USER_EXPIRY_DATE;
 		$query->query_vars['order']    = $order;
 	}
 
@@ -508,7 +508,7 @@ class UserManagement {
 		// Verify token.
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Using custom token for loopback security.
 		$token = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
-		if ( empty( $token ) || get_transient( 'tempusac_cron_token' ) !== $token ) {
+		if ( empty( $token ) || get_transient( 'gateflow_cron_token' ) !== $token ) {
 			wp_send_json_error( 'Invalid token' );
 		}
 
@@ -520,7 +520,7 @@ class UserManagement {
 		}
 
 		// Delete the token to prevent reuse.
-		delete_transient( 'tempusac_cron_token' );
+		delete_transient( 'gateflow_cron_token' );
 
 		$results = array();
 

@@ -1,7 +1,7 @@
 /**
- * Admin JavaScript for Temporary User Access plugin
+ * Admin JavaScript for GateFlow plugin
  *
- * @package TempUsAc
+ * @package GateFlow
  */
 
 (function($) {
@@ -41,7 +41,7 @@
 
 				var msg = $('#user_expiry_clear_msg');
 				if (msg.length) {
-					msg.text(tempusac_admin.expiry_cleared_text);
+					msg.text(gateflow_admin.expiry_cleared_text);
 					setTimeout(function(){
 						msg.text('');
 					}, 2000);

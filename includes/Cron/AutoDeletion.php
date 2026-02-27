@@ -1,18 +1,18 @@
 <?php
 /**
- * Auto-deletion class for Temporary User Access plugin.
+ * Auto-deletion class for GateFlow plugin.
  *
- * @package TempUsAc\Cron
+ * @package GateFlow\Cron
  */
 
-namespace TempUsAc\Cron;
+namespace GateFlow\Cron;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use TempUsAc\Utils\Helpers;
-use TempUsAc\Auth\Authentication;
+use GateFlow\Utils\Helpers;
+use GateFlow\Auth\Authentication;
 
 /**
  * AutoDeletion class
@@ -30,7 +30,7 @@ class AutoDeletion {
 	 * Set up plugin hooks.
 	 */
 	private function setup_hooks(): void {
-		add_action( 'tempusac_auto_delete_cron', array( $this, 'auto_delete_expired_users' ) );
+		add_action( 'gateflow_auto_delete_cron', array( $this, 'auto_delete_expired_users' ) );
 	}
 
 	/**
@@ -40,8 +40,8 @@ class AutoDeletion {
 	 * @return bool
 	 */
 	public function should_auto_delete_user( int $user_id ): bool {
-		$auto_delete = get_user_meta( $user_id, TEMPUSAC_USER_AUTO_DELETE, true );
-		$expiry_date = get_user_meta( $user_id, TEMPUSAC_USER_EXPIRY_DATE, true );
+		$auto_delete = get_user_meta( $user_id, GATEFLOW_USER_AUTO_DELETE, true );
+		$expiry_date = get_user_meta( $user_id, GATEFLOW_USER_EXPIRY_DATE, true );
 
 		// Check if auto-delete is enabled and user has expiry date.
 		if ( '1' !== $auto_delete || empty( $expiry_date ) ) {
@@ -71,7 +71,7 @@ class AutoDeletion {
 		}
 
 		// Prevent race condition: check if auto-deletion is already running.
-		$lock_key = 'tempusac_auto_delete_lock';
+		$lock_key = 'gateflow_auto_delete_lock';
 		if ( get_transient( $lock_key ) ) {
 			return;
 		}
@@ -91,17 +91,17 @@ class AutoDeletion {
 		$users = get_users(
 			array(
 				'fields'     => 'ID',
-				'number'     => TEMPUSAC_AUTO_DELETE_BATCH_SIZE, // Limit batch size for performance.
+				'number'     => GATEFLOW_AUTO_DELETE_BATCH_SIZE, // Limit batch size for performance.
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Intentional meta_query for auto-deletion feature.
 				'meta_query' => array(
 					'relation' => 'AND',
 					array(
-						'key'     => TEMPUSAC_USER_AUTO_DELETE,
+						'key'     => GATEFLOW_USER_AUTO_DELETE,
 						'value'   => '1',
 						'compare' => '=',
 					),
 					array(
-						'key'     => TEMPUSAC_USER_EXPIRY_DATE,
+						'key'     => GATEFLOW_USER_EXPIRY_DATE,
 						'value'   => $formatted_cutoff,
 						'compare' => '<=',
 						'type'    => 'DATE',
@@ -136,7 +136,7 @@ class AutoDeletion {
 	private function trigger_loopback_deletion( array $user_ids ): void {
 		// Generate a secure token.
 		$token = wp_generate_password( 32, false );
-		set_transient( 'tempusac_cron_token', $token, 5 * MINUTE_IN_SECONDS );
+		set_transient( 'gateflow_cron_token', $token, 5 * MINUTE_IN_SECONDS );
 
 		// Prepare the loopback request.
 		$url = admin_url( 'admin-ajax.php' );
@@ -151,7 +151,7 @@ class AutoDeletion {
 				'blocking'    => true,
 				'headers'     => array(),
 				'body'        => array(
-					'action'   => 'tempusac_process_auto_deletion',
+					'action'   => 'gateflow_process_auto_deletion',
 					'token'    => $token,
 					'user_ids' => $user_ids,
 				),
