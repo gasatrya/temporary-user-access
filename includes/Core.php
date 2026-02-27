@@ -48,7 +48,7 @@ class Core {
 	 */
 	private function define_constants() {
 		if ( ! defined( 'GATEFLOW_VERSION' ) ) {
-			define( 'GATEFLOW_VERSION', '1.0.1' );
+			define( 'GATEFLOW_VERSION', '1.0.2' );
 		}
 		if ( ! defined( 'GATEFLOW_PLUGIN_DIR' ) ) {
 			define( 'GATEFLOW_PLUGIN_DIR', plugin_dir_path( __DIR__ ) );

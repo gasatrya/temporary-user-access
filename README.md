@@ -68,7 +68,7 @@ composer run phpcbf
 -   [ ] **v1.1:** Email notifications for users 24h before expiry.
 -   [ ] **v1.2:** Bulk Actions support on the `users.php` screen.
 -   [ ] **v1.3:** WooCommerce support (Automatic expiry for new customers/orders).
--   [x] **Done:** Settings page to customize grace period and batch sizes (Added in v1.0.1).
+-   [x] **Done:** Settings page to customize grace period and batch sizes (Added in v1.0.2).
 
 ## 📄 License
 
