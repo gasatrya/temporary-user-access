@@ -1,7 +1,7 @@
 /**
- * Admin JavaScript for GateFlow plugin
+ * Admin JavaScript for ExpiryFlow plugin
  *
- * @package GateFlow
+ * @package ExpiryFlow
  */
 
 (function($) {
@@ -41,7 +41,7 @@
 
 				var msg = $('#user_expiry_clear_msg');
 				if (msg.length) {
-					msg.text(gateflow_admin.expiry_cleared_text);
+					msg.text(expiryflow_admin.expiry_cleared_text);
 					setTimeout(function(){
 						msg.text('');
 					}, 2000);

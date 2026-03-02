@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="GateFlow Coding Standards">
-    <description>WordPress Coding Standards for GateFlow plugin</description>
+<ruleset name="ExpiryFlow Coding Standards">
+    <description>WordPress Coding Standards for ExpiryFlow plugin</description>
 
     <arg value="ps"/>
     <arg name="colors"/>
@@ -29,7 +29,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="gateflow"/>
+                <element value="expiryflow"/>
             </property>
         </properties>
     </rule>
@@ -37,8 +37,8 @@
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
             <property name="prefixes" type="array">
-                <element value="gateflow"/>
-                <element value="GateFlow"/>
+                <element value="expiryflow"/>
+                <element value="ExpiryFlow"/>
             </property>
         </properties>
     </rule>

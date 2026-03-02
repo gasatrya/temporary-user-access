@@ -1,17 +1,17 @@
 <?php
 /**
- * Settings class for GateFlow plugin.
+ * Settings class for ExpiryFlow plugin.
  *
- * @package GateFlow\Admin
+ * @package ExpiryFlow\Admin
  */
 
-namespace GateFlow\Admin;
+namespace ExpiryFlow\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use GateFlow\Utils\Helpers;
+use ExpiryFlow\Utils\Helpers;
 
 /**
  * Settings class
@@ -38,10 +38,10 @@ class Settings {
 	 */
 	public function add_settings_page(): void {
 		add_users_page(
-			__( 'GateFlow Settings', 'gateflow' ),
-			__( 'GateFlow', 'gateflow' ),
+			__( 'ExpiryFlow Settings', 'expiryflow' ),
+			__( 'ExpiryFlow', 'expiryflow' ),
 			'manage_options',
-			'gateflow-settings',
+			'expiryflow-settings',
 			array( $this, 'render_settings_page' )
 		);
 	}
@@ -51,28 +51,28 @@ class Settings {
 	 */
 	public function register_settings(): void {
 		register_setting(
-			'gateflow_settings_group',
-			'gateflow_grace_period',
+			'expiryflow_settings_group',
+			'expiryflow_grace_period',
 			array(
 				'type'              => 'integer',
 				'sanitize_callback' => array( $this, 'sanitize_grace_period' ),
-				'default'           => GATEFLOW_GRACE_PERIOD_DAYS,
+				'default'           => EXPIRYFLOW_GRACE_PERIOD_DAYS,
 			)
 		);
 
 		add_settings_section(
-			'gateflow_auto_delete_section',
-			__( 'Auto-deletion Settings', 'gateflow' ),
+			'expiryflow_auto_delete_section',
+			__( 'Auto-deletion Settings', 'expiryflow' ),
 			null,
-			'gateflow-settings'
+			'expiryflow-settings'
 		);
 
 		add_settings_field(
-			'gateflow_grace_period',
-			__( 'Grace Period (Days)', 'gateflow' ),
+			'expiryflow_grace_period',
+			__( 'Grace Period (Days)', 'expiryflow' ),
 			array( $this, 'render_grace_period_field' ),
-			'gateflow-settings',
-			'gateflow_auto_delete_section'
+			'expiryflow-settings',
+			'expiryflow_auto_delete_section'
 		);
 	}
 
@@ -100,9 +100,9 @@ class Settings {
 	public function render_grace_period_field(): void {
 		$value = Helpers::get_grace_period();
 		?>
-		<input type="number" name="gateflow_grace_period" value="<?php echo (int) $value; ?>" class="small-text" min="0" max="365" />
+		<input type="number" name="expiryflow_grace_period" value="<?php echo (int) $value; ?>" class="small-text" min="0" max="365" />
 		<p class="description">
-			<?php esc_html_e( 'Number of days to wait after a user account expires before it is automatically deleted.', 'gateflow' ); ?>
+			<?php esc_html_e( 'Number of days to wait after a user account expires before it is automatically deleted.', 'expiryflow' ); ?>
 		</p>
 		<?php
 	}
@@ -119,8 +119,8 @@ class Settings {
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( 'gateflow_settings_group' );
-				do_settings_sections( 'gateflow-settings' );
+				settings_fields( 'expiryflow_settings_group' );
+				do_settings_sections( 'expiryflow-settings' );
 				submit_button();
 				?>
 			</form>

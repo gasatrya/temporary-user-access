@@ -1,10 +1,10 @@
-# GEMINI.md - GateFlow
+# GEMINI.md - ExpiryFlow
 
-This file provides context and instructions for AI agents working on the **GateFlow** WordPress plugin.
+This file provides context and instructions for AI agents working on the **ExpiryFlow** WordPress plugin.
 
 ## Project Overview
 
-**GateFlow** is a security-focused WordPress plugin designed to automate the lifecycle of temporary guest accounts. It allows administrators to set expiration dates for users, ensuring access is revoked automatically.
+**ExpiryFlow** is a security-focused WordPress plugin designed to automate the lifecycle of temporary guest accounts. It allows administrators to set expiration dates for users, ensuring access is revoked automatically.
 
 ### Key Technologies
 - **Language:** PHP 8.0+ (Namespaced, OOP).

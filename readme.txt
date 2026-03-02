@@ -1,4 +1,4 @@
-=== GateFlow – Temporary User Access & Expiry Manager ===
+=== ExpiryFlow – Temporary User Access & Expiry Manager ===
 Contributors: gasatrya
 Tags: user management, membership, expiry, temporary access, auto-delete
 Requires at least: 6.4
@@ -16,7 +16,7 @@ Giving temporary access to contractors, guest writers, or support agents is a st
 
 These "Zombie Accounts" are a major security risk and lead to database bloat over time.
 
-**GateFlow** solves this by automating the offboarding process. You set an expiry date at the moment of account creation, and the plugin handles the rest—from blocking login to permanent deletion.
+**ExpiryFlow** solves this by automating the offboarding process. You set an expiry date at the moment of account creation, and the plugin handles the rest—from blocking login to permanent deletion.
 
 Built with a performance-first, object-oriented architecture for modern WordPress sites.
 
@@ -51,7 +51,7 @@ This plugin is built with data minimization in mind. It helps you comply with GD
 
 == Installation ==
 
-1.  Upload the `gateflow` folder to the `/wp-content/plugins/` directory, or install via **Plugins → Add New** in your WordPress dashboard.
+1.  Upload the `expiryflow` folder to the `/wp-content/plugins/` directory, or install via **Plugins → Add New** in your WordPress dashboard.
 2.  Activate the plugin through the **Plugins** menu.
 3.  Go to **Users → Add New** or edit an existing user.
 4.  Look for the **Account Expiry Settings** section at the bottom of the form.
@@ -69,7 +69,7 @@ As soon as the expiry date passes, the user is blocked from logging in. If they 
 
 = How does the grace period work? =
 
-If "Auto-delete" is enabled, the plugin waits for the configured number of days (default 2) after the account has expired before deleting it. This gives you a window to extend their access if needed. You can adjust this in Users > GateFlow.
+If "Auto-delete" is enabled, the plugin waits for the configured number of days (default 2) after the account has expired before deleting it. This gives you a window to extend their access if needed. You can adjust this in Users > ExpiryFlow.
 
 = Does it support timezones? =
 
@@ -87,8 +87,8 @@ No. The plugin is lightweight, uses no external dependencies, and its heaviest t
 == Changelog ==
 
 = 1.0.2 =
-*   Branded: Renamed plugin to GateFlow.
-*   Standardized: Namespaces, constants, and prefixes updated to 'GateFlow'.
+*   Branded: Renamed plugin to ExpiryFlow.
+*   Standardized: Namespaces, constants, and prefixes updated to 'ExpiryFlow'.
 *   Updated: Documentation and asset handles to reflect the new brand.
 
 = 1.0.1 =
@@ -107,7 +107,7 @@ No. The plugin is lightweight, uses no external dependencies, and its heaviest t
 == Upgrade Notice ==
 
 = 1.0.2 =
-Rebranding update. All functionality remains the same but under the new GateFlow brand.
+Rebranding update. All functionality remains the same but under the new ExpiryFlow brand.
 
 = 1.0.1 =
 Security and reliability update. Recommended for all users.

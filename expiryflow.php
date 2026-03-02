@@ -1,15 +1,15 @@
 <?php
 /**
- * GateFlow
+ * ExpiryFlow
  *
- * @package           GateFlow
+ * @package           ExpiryFlow
  * @author            ctaflow
  * @copyright         2026 ctaflow
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       GateFlow
- * Plugin URI:        https://www.ctaflow.com/plugins/gateflow
+ * Plugin Name:       ExpiryFlow
+ * Plugin URI:        https://www.ctaflow.com/plugins/expiryflow
  * Description:       Extend WordPress user management with expiration functionality for temporary user accounts. Set expiry dates, enable auto-deletion, and keep your user database clean.
  * Version:           1.0.2
  * Requires at least: 6.4
@@ -18,7 +18,7 @@
  * Author URI:        https://www.ctaflow.com/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       gateflow
+ * Text Domain:       expiryflow
  * Domain Path:       /languages
  */
 
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 spl_autoload_register(
 	function ( $class_name ) {
-		$prefix   = 'GateFlow\\';
+		$prefix   = 'ExpiryFlow\\';
 		$base_dir = __DIR__ . '/includes/';
 
 		$len = strlen( $prefix );
@@ -53,4 +53,4 @@ spl_autoload_register(
  * Initialize the plugin immediately.
  * This is necessary for activation hooks to work correctly.
  */
-\GateFlow\Core::get_instance();
+\ExpiryFlow\Core::get_instance();
