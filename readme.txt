@@ -81,8 +81,9 @@ No. The plugin is lightweight, uses no external dependencies, and its heaviest t
 
 == Screenshots ==
 
-1. User profile with the new Account Expiry Settings.
-2. The Users list table featuring color-coded expiry status columns.
+1. Add new user form with the Account Expiry Settings.
+2. User profile with the new Account Expiry Settings.
+3. The Users list table featuring color-coded expiry status columns.
 
 == Changelog ==
 
