@@ -20,6 +20,8 @@ These "Zombie Accounts" are a major security risk and lead to database bloat ove
 
 Built with a performance-first, object-oriented architecture for modern WordPress sites.
 
+For more information, visit the official plugin page: [ExpiryFlow](https://www.ctaflow.com/plugins/expiryflow/)
+
 = Who is this for? =
 
 *   **Agencies & Developers** giving temporary site access to contractors.
@@ -48,6 +50,10 @@ This plugin is built with data minimization in mind. It helps you comply with GD
 *   **Email Notifications** — Automated warnings sent to users before their access expires.
 *   **Bulk Actions** — Set or clear expiry dates for multiple users at once from the Users list.
 *   **Customizable Settings** — Adjust the grace period and auto-deletion batch sizes.
+
+== More Plugins ==
+
+*   **[ButtonFlow](https://www.ctaflow.com/plugins/buttonflow/)** — The easiest way to create high-converting, beautiful call-to-action buttons in WordPress.
 
 == Installation ==
 
